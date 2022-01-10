@@ -590,86 +590,88 @@ aFun<span class="token punctuation">(</span><span class="token punctuation">(</s
 func<span class="token punctuation">(</span>z<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span>y<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>函数也可传入<strong>重复参数</strong>，在最后一个参数类型后加上”<em>“。类型为”T</em>*”的参数实际类型是”Array[T]”，即若干个T类型的数组。但传入参数的类型必须是T而不能是数组。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">def func(x:String, y: Int*)&#x3D;&#123;…&#125;
-func(&quot;Num&quot;,1,2,3)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> func<span class="token punctuation">(</span>x<span class="token operator">:</span><span class="token builtin">String</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token punctuation">&#123;</span>…<span class="token punctuation">&#125;</span>
+func<span class="token punctuation">(</span><span class="token string">"Num"</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>Scala允许柯里化，即函数可以有任意个参数列表。同时，参数列表里<strong>只有</strong>一个参数时，调用该函数时允许单个参数改用花括号”{}”。注意，花括号只允许单个参数，当参数列表有多个参数时，只能使用括号。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">def func(x:Int,y:Int)(z:Int)(k:Int)&#x3D;&#123;…&#125;
-func(1,2)(3)&#123;4&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> func<span class="token punctuation">(</span>x<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">,</span>y<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token punctuation">(</span>z<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token punctuation">(</span>k<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token punctuation">&#123;</span>…<span class="token punctuation">&#125;</span>
+func<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span><span class="token number">4</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>在阅读代码时，常常遇见诸如 <code>def xxx(f: T =&gt; U, ...) ...</code>或 <code>def xxx(...): T =&gt; U</code>的代码，要理解前者表示需要传入一个函数作为参数，后者表示函数返回的对象是一个函数。</p>
 <h2 id="类和对象"><a href="#类和对象" class="headerlink" title="类和对象"></a>类和对象</h2><p>Scala里以关键词”class”定义类。类里定义的var和val类型变量，称为<strong>字段</strong>；类中定义的函数，称为<strong>方法</strong>，字段和方法统称为成员。对象是类的实例，对象成员可通过”对象.成员”来访问。与Java不同，Scala类成员<strong>默认公有</strong>，没有关键词”public”，但有关键词”private”修饰表示私有。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">class Stu&#123;
-	val name:String &#x3D; &quot;None&quot;
-&#125;
-val stu &#x3D; new Stu
-println(stu.name)
-None					&#x2F;&#x2F; 打印结果<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> Stu<span class="token punctuation">&#123;</span>
+	<span class="token keyword">val</span> name<span class="token operator">:</span><span class="token builtin">String</span> <span class="token operator">=</span> <span class="token string">"None"</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">val</span> stu <span class="token operator">=</span> <span class="token keyword">new</span> Stu
+println<span class="token punctuation">(</span>stu<span class="token punctuation">.</span>name<span class="token punctuation">)</span>
+None					<span class="token comment">// 打印结果</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>类的构造方法包括主构造方法和辅助构造方法。Scala加强了辅助构造方法调用超类的限制，只允许主构造方法调用超类的构造方法，这让Scala更加简洁。Scala没有指针，同时使用JVM，无需像C++定义析构函数。</p>
 <p>Scala为了进一步简化代码，允许在类参数前加上val或var修饰，这样会在类内部生成一个与参数同名的共有字段。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">class A(val n:String)&#123;…&#125;
-val a &#x3D; new A(&quot;SS&quot;)
-println(a.n)
-SS					&#x2F;&#x2F; 打印结果<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> A<span class="token punctuation">(</span><span class="token keyword">val</span> n<span class="token operator">:</span><span class="token builtin">String</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>…<span class="token punctuation">&#125;</span>
+<span class="token keyword">val</span> a <span class="token operator">=</span> <span class="token keyword">new</span> A<span class="token punctuation">(</span><span class="token string">"SS"</span><span class="token punctuation">)</span>
+println<span class="token punctuation">(</span>a<span class="token punctuation">.</span>n<span class="token punctuation">)</span>
+SS					<span class="token comment">// 打印结果</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h3 id="单列对象与伴生对象"><a href="#单列对象与伴生对象" class="headerlink" title="单列对象与伴生对象"></a>单列对象与伴生对象</h3><p>在Scala中，构造对象可用关键词”new”，也可以使用”object”来定义对象。new实例的对象没有数量限制，而object定义的对象只能有这一个，故称为<strong>单列对象</strong>。</p>
 <p>如果某个单例对象和某个类同名，那么单例对象称为这个类的<strong>伴生对象</strong>，同样，类称为这个单例对象的<strong>伴生类</strong>。伴生类和伴生对象必须在同一个文件里，而且两者可以互访对方所有成员。</p>
 <p>Scala追求<strong>纯粹的面向对象</strong>。在Java中，类内部定义的静态变量不属于任何一个用new实例化的对象，而是共有部分。但Scala把类内部的静态变量移除，集中定义在伴生对象里。</p>
 <p>单列对象除了作为伴生对象外，通常也作为打包某方面功能的函数集，或者包含主函数成为程序的入口。</p>
 <h3 id="工厂对象和工厂方法"><a href="#工厂对象和工厂方法" class="headerlink" title="工厂对象和工厂方法"></a>工厂对象和工厂方法</h3><p>如果定义一个方法专门用来构造某一个类的对象，那么这种方法就称为<strong>工厂方法</strong>。包含这些工厂方法集合的单例对象，也就叫<strong>工厂对象</strong>。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">&#x2F;&#x2F; students.scala
-class Students(val name: String, var score: Int) &#123;…&#125;
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// students.scala</span>
+<span class="token keyword">class</span> Students<span class="token punctuation">(</span><span class="token keyword">val</span> name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> <span class="token keyword">var</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>…<span class="token punctuation">&#125;</span>
  
-object Students &#123;
-	def registerStu(name: String, score: Int) &#x3D; new Students(name, score)
-&#125;
+<span class="token keyword">object</span> Students <span class="token punctuation">&#123;</span>
+	<span class="token keyword">def</span> registerStu<span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">new</span> Students<span class="token punctuation">(</span>name<span class="token punctuation">,</span> score<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
 
-val stu &#x3D; Students.registerStu(&quot;Tom&quot;,100)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">val</span> stu <span class="token operator">=</span> Students<span class="token punctuation">.</span>registerStu<span class="token punctuation">(</span><span class="token string">"Tom"</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>例子中，工厂对象Students包含了工厂方法registerStu。当一系列类存在继承关系时，可以在基类的伴生对象中定义一系列对应的工厂方法。使用工厂方法的好处是不用直接使用new来实例化对象，改用方法调用，而方法名是任意的，这样对外隐藏了类的实现细节。</p>
+<p>例子中，工厂对象<code>Students</code>包含了工厂方法<code>registerStu</code>。当一系列类存在继承关系时，可以在基类的伴生对象中定义一系列对应的工厂方法。使用工厂方法的好处是不用直接使用new来实例化对象，改用方法调用，而方法名是任意的，这样对外隐藏了类的实现细节。</p>
 <h3 id="apply方法"><a href="#apply方法" class="headerlink" title="apply方法"></a>apply方法</h3><p>方法中有一个特殊的方法名——<strong>apply</strong>，若是定义了此方法，那么既可以显式调用(“对象.apply(参数)”)，也可以隐式调用(“对象(参数)”)。当隐式调用时，编译器会自动插入缺失的”.apply”。若apply是无参方法，应该写出空括号，否则无法隐式调用。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">&#x2F;&#x2F; students.scala
-class Students(val name: String, var score: Int) &#123;
-	def apply(s:Int) &#x3D; score &#x3D; s
-&#125;
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// students.scala</span>
+<span class="token keyword">class</span> Students<span class="token punctuation">(</span><span class="token keyword">val</span> name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> <span class="token keyword">var</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">def</span> apply<span class="token punctuation">(</span>s<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> score <span class="token operator">=</span> s
+<span class="token punctuation">&#125;</span>
 
-object Students &#123;
-	def apply(name: String, score: Int) &#x3D; new Students(name, score)
-&#125;
+<span class="token keyword">object</span> Students <span class="token punctuation">&#123;</span>
+	<span class="token keyword">def</span> apply<span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">new</span> Students<span class="token punctuation">(</span>name<span class="token punctuation">,</span> score<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
 
-val stu &#x3D; Students(&quot;Tom&quot;,100)
-stu.score			&#x2F;&#x2F; res0: Int &#x3D; 100
-stu(80)
-stu.score			&#x2F;&#x2F; res1: Int &#x3D; 80
+<span class="token keyword">val</span> stu <span class="token operator">=</span> Students<span class="token punctuation">(</span><span class="token string">"Tom"</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+stu<span class="token punctuation">.</span>score			<span class="token comment">// res0: Int = 100</span>
+stu<span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">)</span>
+stu<span class="token punctuation">.</span>score			<span class="token comment">// res1: Int = 80</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>通常，会在伴生对象里定义apply的工厂方法，这样就能通过”伴生对象名(参数)”来构造对象，而伴生对象又与伴生类同名，这样代码更加简洁和易读。此外，类里也可定义一个与类相关的、具有特定行为的apply方法，可以隐式调用。</p>
 <h3 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h3><p>主函数是Scala程序唯一的入口，即程序是从主函数开始运行的。要提供这样的入口，则必须在<strong>某个单例对象</strong>里定义一个名为”main”的函数，而且该函数只有一个参数，类型为字符串数组Array[String]，函数的返回类型是Unit。任何符合条件的单例对象都能成为程序的入口。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">&#x2F;&#x2F; students.scala
-class Students(val name: String, var score: Int) &#123;
-	def apply(s:Int) &#x3D; score &#x3D; s
-&#125;
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// students.scala</span>
+<span class="token keyword">class</span> Students<span class="token punctuation">(</span><span class="token keyword">val</span> name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> <span class="token keyword">var</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">def</span> apply<span class="token punctuation">(</span>s<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> score <span class="token operator">=</span> s
+<span class="token punctuation">&#125;</span>
 
-object Students &#123;
-	def apply(name: String, score: Int) &#x3D; new Students(name, score)
-&#125;
+<span class="token keyword">object</span> Students <span class="token punctuation">&#123;</span>
+	<span class="token keyword">def</span> apply<span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">new</span> Students<span class="token punctuation">(</span>name<span class="token punctuation">,</span> score<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
 
-&#x2F;&#x2F; main.scala
-object Start &#123;
-  def main(args: Array[String]) &#x3D; &#123;
+<span class="token comment">// main.scala</span>
+<span class="token keyword">object</span> Start <span class="token punctuation">&#123;</span>
+  <span class="token keyword">def</span> main<span class="token punctuation">(</span>args<span class="token operator">:</span> Array<span class="token punctuation">[</span><span class="token builtin">String</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
     …
-  &#125;
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>使用命令“scalac students.scala main.scala”将两个文件编译后，就能用命令“scala Start 参数1 参数2”来运行程序。命令里的”Start”就是包含主函数的单例对象的名字，后面可以输入若干个用空格间隔的参数。这些参数被打包成字符串数组供主函数使用，也就是args(0)、args(1)。</p>
+<p>使用命令 <code>scalac students.scala main.scala</code>将两个文件编译后，就能用命令 <code>scala Start 参数1 参数2</code>来运行程序。命令里的<code>Start</code>就是包含主函数的单例对象的名字，后面可以输入若干个用空格间隔的参数。这些参数被打包成字符串数组供主函数使用，也就是args(0)、args(1)。</p>
 <p>主函数有一种简化写法，就是让单列对象混入”App”特质，这样就只需在单列对象里编写主函数的函数体。</p>
-<pre class="line-numbers language-Scala" data-language="Scala"><code class="language-Scala">&#x2F;&#x2F; main.scala
-object Start extends App&#123;
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// main.scala</span>
+<span class="token keyword">object</span> Start <span class="token keyword">extends</span> App<span class="token punctuation">&#123;</span>
     …
-&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="更纯粹的面向对象——操作符即方法"><a href="#更纯粹的面向对象——操作符即方法" class="headerlink" title="更纯粹的面向对象——操作符即方法"></a>更纯粹的面向对象——操作符即方法</h2>
+<h2 id="更纯粹的面向对象——操作符即方法"><a href="#更纯粹的面向对象——操作符即方法" class="headerlink" title="更纯粹的面向对象——操作符即方法"></a>更纯粹的面向对象——操作符即方法</h2><p>在Java中，int、char等基本类型不属于面向对象的范畴。比如只能说“1”是一个int类型的常量，却不能说它是一个int类型的对象。与之对应的，这些语言还定义了与基本类型相关的操作符。例如，有算术操作符加法“+”，它可以连接左、右两个操作数，然后算出相应的总和。</p>
+<p>但Scala追求纯粹的面向对象，</p>
+
                 
             </div>
             <hr/>
