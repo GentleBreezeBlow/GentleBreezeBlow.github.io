@@ -152,6 +152,141 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-scala-01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/01/10/scala-01/">scala_01</a>
+    </h1>
+  
+
+        
+        <a href="/2022/01/10/scala-01/" class="archive-article-date">
+  	<time datetime="2022-01-10T06:26:12.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="scala学习-一"><a href="#scala学习-一" class="headerlink" title="scala学习.一"></a>scala学习.一</h1><h2 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h2><p>scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。</p>
+<p>用“var”修饰的变量，可以重新赋予新的值，并且把原值抛弃，类似于Java的非final变量。在后续重新赋值时，就不用再写“var”了。而用“val”修饰的变量，则禁止被重新赋值，类似于Java的final变量，换句话说，就是只能读不能写的变量。</p>
+<p>变量命名不能以数字开头，Scala推荐的命名方法是“驼峰命名法”，即每个单词的首字母大写，并且变量名和函数名以小写字母开头，类、对象和特质则以大写字母开头。例如，“<code>val isOne</code>”，“<code>class MyClass</code>”。在首次定义变量时，就<strong>必须赋予具体的值来初始化</strong>。</p>
+<p>val表示的常量并不是说一定不会改变值，更准确地说是赋的对象是唯一的，而赋给变量的对象有可能会变。也就是说val不能再重新指向新的对象。Chisel中都是用val来定义变量，因为电路的不可变性。</p>
+<blockquote>
+<p>Scala提倡定义val类型的变量，因为它是函数式编程，而函数式编程的思想之一就是传入函数的参数不应该被改变。所以，在Scala里，所有函数的参数都必须是val类型的。但是，Scala也允许指令式编程，因而预留了var类型的变量，尽管并不推荐使用。对于习惯了指令式编程的读者，例如，喜欢编写“for(i = 0; i &lt; N; i++)”来实现一个循环，很显然更倾向于使用var类型的变量，因为在这个for循环里，变量i被多次重新赋值。Scala推荐读者学会使用val，学会函数式编程。使用val类型的一个好处就是，你不用去计算某个变量在某个时刻是什么值，因为val类型的变量一旦被初始化，就一直不变，直到被重新定义。</p>
+</blockquote>
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><p>Scala是静态语言，在编译期间会检查每个对象的类型。对于类型不匹配的非法操作，在编译时就能被发现。静态语言相比诸如Python这样的动态语言在某些方面是有优势的。对于Chisel而言，我们就需要这种优势。因为Chisel需要编译成Verilog，我们不能产生非法的Verilog语句并且等到模块运行时才去发现它。</p>
+<p>Scala标准库定义了一些基本类型，如下表所示。除了“String”类型是属于java.lang包之外，其余都在Scala的包里。</p>
+<p>Scala中的类型<strong>首字母必须大写</strong>，包括Chisel的UInt等类型，甚至需要两个字母大写。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Byte</td>
+<td></td>
+</tr>
+<tr>
+<td>Short</td>
+<td></td>
+</tr>
+<tr>
+<td>Int</td>
+<td></td>
+</tr>
+<tr>
+<td>Long</td>
+<td></td>
+</tr>
+<tr>
+<td>Char</td>
+<td></td>
+</tr>
+<tr>
+<td>String</td>
+<td></td>
+</tr>
+<tr>
+<td>Float</td>
+<td></td>
+</tr>
+<tr>
+<td>Double</td>
+<td></td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td></td>
+</tr>
+</tbody></table>
+<h2 id="定义变量规则"><a href="#定义变量规则" class="headerlink" title="定义变量规则"></a>定义变量规则</h2><p>在定义变量时，应该指明变量的类型，只不过Scala的编译器具有<strong>自动推断类型</strong>的功能，可以根据赋给变量的对象的类型，来自动推断出变量的类型。如果要显式声明变量的类型，或者无法推断时，则只需在变量名后面加上一个冒号“ : ”，然后在等号与冒号之间写出类型名即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">val a:Int = 1</span><br></pre></td></tr></table></figure>
+
+<p>可在字面量结尾添加字母来改变类型，例如整数默认推断为Int，但结尾有L或l，则推断为Long类型。Scala支持字面量前加”0x”表示十六进制，不区分大小写。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val b=10L	// b:Long = 10</span><br><span class="line">val c=0xA	// c:Int = 10</span><br></pre></td></tr></table></figure>
+
+<p>字符字面量由单引号’’包裹，Unicode编码。字符串是双引号””包裹，允许转义字符，此外三个双引号””” “””中的内容不会被转义。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val d=&#x27;\u0041&#x27;				//d:Char = A</span><br><span class="line">val e=&quot;&quot;&quot;So long String \\&#x27;\&quot;!&quot;&#x27;&#x27;&quot;&quot;&quot;	//e:String = So long String \\&#x27;\&quot;!&quot;&#x27;&#x27;</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">scala</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/01/10/scala-01/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -318,6 +453,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">scala</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
