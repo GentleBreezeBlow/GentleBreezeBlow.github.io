@@ -508,7 +508,7 @@
      <span class="token keyword">assign</span> io_c <span class="token operator">=</span> io_a <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span>
 <span class="token keyword">endmodule</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。</p>
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="Chisel自定义数据类型"><a href="#Chisel自定义数据类型" class="headerlink" title="Chisel自定义数据类型"></a>Chisel自定义数据类型</h3><p><img src="https://img-blog.csdnimg.cn/20190218003949321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MjkxNTA1,size_16,color_FFFFFF,t_70" alt="img"></p>
 <p>Chisel常用的类型就五种：UInt、SInt、Bool、Bundle和Vec[T]。图中绿色方块是class，红色是object，蓝色是trait，箭头指向的是超类和混入的特质。</p>
 <p>Chisel定义了自己的一套数据类型，构建硬件电路要用Chisel的数据类型，在使用时不要与Scala数据类型混淆。所有数据类型都继承自抽象基类Data，它混入了两个特质HasId和NamedComponent。在实际硬件构成里，应该关注Data类的两大子类：聚合类Aggregate和元素类Element。</p>

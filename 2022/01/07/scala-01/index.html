@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="Scala学习, Hexo">
-    <meta name="description" content="Scala学习.一变量及数据类型变量和常量Scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。">
+    <meta name="description" content="Scala学习.一Scala是一种把面向对象和函数式编程理念加入静态类型语言中的混合体。
+变量及数据类型变量Scala有两种变量，var和val。val类似于Java中的final变量，一旦初始化了，val就不能再被赋值。相反，var如同J">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -470,13 +471,26 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Scala学习-一"><a href="#Scala学习-一" class="headerlink" title="Scala学习.一"></a>Scala学习.一</h1><h2 id="变量及数据类型"><a href="#变量及数据类型" class="headerlink" title="变量及数据类型"></a>变量及数据类型</h2><h3 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h3><p>Scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。</p>
-<p>用“var”修饰的变量，可以重新赋予新的值，并且把原值抛弃，类似于Java的非final变量。在后续重新赋值时，就不用再写“var”了。而用“val”修饰的变量，则禁止被重新赋值，类似于Java的final变量，换句话说，就是只能读不能写的变量。</p>
+                <h1 id="Scala学习-一"><a href="#Scala学习-一" class="headerlink" title="Scala学习.一"></a>Scala学习.一</h1><p>Scala是一种把<strong>面向对象</strong>和<strong>函数式编程</strong>理念加入<strong>静态类型语言</strong>中的混合体。</p>
+<h2 id="变量及数据类型"><a href="#变量及数据类型" class="headerlink" title="变量及数据类型"></a>变量及数据类型</h2><h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>Scala有两种变量，var和val。val类似于Java中的final变量，一旦初始化了，val就不能再被赋值。相反，var如同Java中的非final变量，可在它的生命周期中被多次赋值。</p>
+<p>变量定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。</p>
 <p>变量命名不能以数字开头，Scala推荐的命名方法是“驼峰命名法”，即每个单词的首字母大写，并且变量名和函数名以小写字母开头，类、对象和特质则以大写字母开头。例如，“<code>val isOne</code>”，“<code>class MyClass</code>”。在首次定义变量时，就<strong>必须赋予具体的值来初始化</strong>。</p>
 <p>val表示的常量并不是说一定不会改变值，更准确地说是赋的对象是唯一的，而赋给变量的对象有可能会变。也就是说val不能再重新指向新的对象。Chisel中都是用val来定义变量，因为电路的不可变性。</p>
 <blockquote>
 <p>Scala提倡定义val类型的变量，因为它是函数式编程，而函数式编程的思想之一就是传入函数的参数不应该被改变。所以，在Scala里，所有函数的参数都必须是val类型的。但是，Scala也允许指令式编程，因而预留了var类型的变量，尽管并不推荐使用。对于习惯了指令式编程的读者，例如，喜欢编写“for(i = 0; i &lt; N; i++)”来实现一个循环，很显然更倾向于使用var类型的变量，因为在这个for循环里，变量i被多次重新赋值。Scala推荐读者学会使用val，学会函数式编程。使用val类型的一个好处就是，你不用去计算某个变量在某个时刻是什么值，因为val类型的变量一旦被初始化，就一直不变，直到被重新定义。</p>
 </blockquote>
+<h3 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h3><p>在定义变量时，应该指明变量的类型，但Scala的编译器具有<strong>自动推断类型</strong>的功能。显式定义时，在变量名称之后加冒号”:”及表达式的类型。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> a<span class="token operator">:</span><span class="token builtin">Int</span> <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">val</span> a <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>可在字面量结尾添加字母来改变类型，例如整数默认推断为Int，但结尾有L或l，则推断为Long类型。Scala支持字面量前加”0x”表示十六进制，不区分大小写。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> b<span class="token operator">=</span><span class="token number">10L</span>	<span class="token comment">// b:Long = 10</span>
+<span class="token keyword">val</span> c<span class="token operator">=</span><span class="token number">0xA</span>	<span class="token comment">// c:Int = 10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>字符字面量由单引号’’包裹，Unicode编码。字符串是双引号””包裹，允许转义字符，此外三个双引号””” “””中的内容不会被转义。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> d<span class="token operator">=</span><span class="token char">'\u0041'</span>              	        <span class="token comment">//d:Char = A</span>
+<span class="token keyword">val</span> e<span class="token operator">=</span><span class="token triple-quoted-string string">"""So long String \\'\"!"''"""</span>	<span class="token comment">//e:String = So long String \\'\"!"''</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><p>Scala是静态语言，在编译期间会检查每个对象的类型。对于类型不匹配的非法操作，在编译时就能被发现。静态语言相比诸如Python这样的动态语言在某些方面是有优势的。对于Chisel而言，我们就需要这种优势。因为Chisel需要编译成Verilog，我们不能产生非法的Verilog语句并且等到模块运行时才去发现它。</p>
 <p>Scala标准库定义了一些基本类型，如下表所示。除了“String”类型是属于java.lang包之外，其余都在Scala的包里。</p>
 <p>Scala中的类型<strong>首字母必须大写</strong>，Chisel的UInt等类型，甚至需要两个字母大写。</p>
@@ -524,24 +538,13 @@
 <td></td>
 </tr>
 </tbody></table>
-<h3 id="定义变量规则"><a href="#定义变量规则" class="headerlink" title="定义变量规则"></a>定义变量规则</h3><p>在定义变量时，应该指明变量的类型，只不过Scala的编译器具有<strong>自动推断类型</strong>的功能，可以根据赋给变量的对象的类型，来自动推断出变量的类型。如果要显式声明变量的类型，或者无法推断时，则只需在变量名后面加上一个冒号“ : ”，然后在等号与冒号之间写出类型名即可。</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> a<span class="token operator">:</span><span class="token builtin">Int</span> <span class="token operator">=</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>可在字面量结尾添加字母来改变类型，例如整数默认推断为Int，但结尾有L或l，则推断为Long类型。Scala支持字面量前加”0x”表示十六进制，不区分大小写。</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> b<span class="token operator">=</span><span class="token number">10L</span>	<span class="token comment">// b:Long = 10</span>
-<span class="token keyword">val</span> c<span class="token operator">=</span><span class="token number">0xA</span>	<span class="token comment">// c:Int = 10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-<p>字符字面量由单引号’’包裹，Unicode编码。字符串是双引号””包裹，允许转义字符，此外三个双引号””” “””中的内容不会被转义。</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> d<span class="token operator">=</span><span class="token char">'\u0041'</span>              	        <span class="token comment">//d:Char = A</span>
-<span class="token keyword">val</span> e<span class="token operator">=</span><span class="token triple-quoted-string string">"""So long String \\'\"!"''"""</span>	<span class="token comment">//e:String = So long String \\'\"!"''</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
 <h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="函数定义"><a href="#函数定义" class="headerlink" title="函数定义"></a>函数定义</h3><p>Scala中的函数结构如下，入参要<strong>显式声明类型</strong>，因为编译器在编译期间无法推断入参类型，且<strong>函数入参均为val类型，函数体内不可更改入参</strong>。</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">用“<span class="token keyword">def</span>”开始函数定义
-  <span class="token operator">|</span> 函数名
-  <span class="token operator">|</span>   <span class="token operator">|</span>  参数及参数类型
-  <span class="token operator">|</span>   <span class="token operator">|</span>        <span class="token operator">|</span>   函数返回结果的类型
-  <span class="token operator">|</span>   <span class="token operator">|</span>        <span class="token operator">|</span>          <span class="token operator">|</span>   等号
-  <span class="token operator">|</span>   <span class="token operator">|</span>        <span class="token operator">|</span>          <span class="token operator">|</span>    <span class="token operator">|</span>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token string">"def"</span>开始函数定义
+  <span class="token operator">|</span> 
+  <span class="token operator">|</span> 函数名    
+  <span class="token operator">|</span>   <span class="token operator">|</span>      参数列表  函数返回值类型
+  <span class="token operator">|</span>   <span class="token operator">|</span>         <span class="token operator">|</span>         <span class="token operator">|</span>   等号
+  <span class="token operator">|</span>   <span class="token operator">|</span>         <span class="token operator">|</span>         <span class="token operator">|</span>    <span class="token operator">|</span>
   <span class="token keyword">def</span> max<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Int</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
 	<span class="token keyword">if</span><span class="token punctuation">(</span>x <span class="token operator">></span> y<span class="token punctuation">)</span>
 		x
@@ -549,21 +552,32 @@
 		y   	<span class="token operator">|</span>
   <span class="token punctuation">&#125;</span>       		<span class="token operator">|</span>
         		<span class="token operator">|</span>
-		花括号里定义函数体<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+		花括号中的函数体<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>Scala代码中可<strong>省略分号</strong>，但前提是一行只有一条语句，且句首和句末不能出现非法结尾字符（例如”.”）。一般来说，按照正常代码风格写就可以省略分号。注意，括号要是**花括号”{}”**，圆括号”()”无法自动推断分号。</p>
-<p>默认情况下，编译器会为最后一个表达式作为函数的返回结果，同时返回的类型也是可自动判断的，因此上例中的返回结果类型:Int亦可省略。建议不要显式声明“return”，这会引发warning，而且使得代码风格看上去像指令式风格。函数返回结果有特殊类型——Unit，表示没有值返回，同样可被推断出来，但如果显式声明为Unit类型的函数，则即使函数体最后有一个可以返回具体值的表达式，也不会把表达式的结果返回。</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> add<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> x <span class="token operator">+</span> y <span class="token punctuation">&#125;</span>		<span class="token comment">// 函数add: (x: Int, y: Int)Int</span>
-add<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>								<span class="token comment">// 返回结果res0: Int = 3</span>
+<p>Scala代码中可<strong>省略分号</strong>，但前提是一行只有一条语句，且句首和句末不能出现非法结尾字符（例如”.”）。一般来说，按照正常代码风格写就可以省略分号。注意，多条语句时括号要是**花括号”{}”**，圆括号”()”无法自动推断分号。</p>
+<p>有时候Scala编译器需要函数返回值类型的定义。比如如果函数是递归的，那么函数返回值类型就必须明确说明。在上例中，即使不写返回值类型，编译器依旧可以推断。同样，若函数只包含一个语句，花括号亦可省略。这样上例就可以写成：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> max<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">if</span><span class="token punctuation">(</span>x <span class="token operator">></span> y<span class="token punctuation">)</span> x <span class="token keyword">else</span> y<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<span class="token keyword">def</span> nothing<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Unit</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span> x <span class="token operator">+</span> y <span class="token punctuation">&#125;</span>	<span class="token comment">// 函数nothing: (x: Int, y: Int)Unit</span>
-nothing<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>									<span class="token comment">// 无返回结果</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>默认情况下，编译器会为函数计算结果的最后一个表达式作为函数的返回结果。建议不要显式声明“return”，这会引发warning，而且使得代码风格看上去像指令式风格。</p>
+<p>既不带参数也不返回有用结果的函数定义例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> greet<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> println<span class="token punctuation">(</span><span class="token string">"Hello,world!"</span><span class="token punctuation">)</span>
+greet<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token builtin">Unit</span>							<span class="token comment">// 解释器返回结果</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
+<p>解释器输出返回<code>greet: ()Unit</code>。greet为函数名，空白的括号说明函数不带参数。Unit是函数的结果类型，指的是函数没有有效的返回值。且Unit是自动推断的，但如果函数显示声明返回值类型为Unit，那么即使函数体最后有一个可返回具体值的表达式，也不会返回结果。Scala的Unit类型比较类似Java的void类型，而且实际上Java里返回void的方法都会被映射为返回Unit的Scala方法。因此结果类型为Unit的方法，并非是为了得到返回值，而是为了其他副作用(side effect)。</p>
 <blockquote>
-<p>函数定义中有一个等号，这使得它看起来类似数学里的函数“f(x) = …”。当函数的返回类型没有显式声明时，那么这个等号可以省略，但是返回类型一定会被推断成Unit类型，不管有没有值返回，而且函数体必须有花括号。当函数的返回类型显式声明时，则无论如何都不能省略等号。建议写代码时不要省略等号，避免产生不必要的错误，返回类型最好也显式声明。</p>
+<p>函数定义中有一个等号，这使得它看起来类似数学里的函数“f(x) = …”。当函数的返回值类型没有显式声明时，那么这个等号可以省略，但是返回值类型一定会被推断成Unit类型，不管有没有值返回，而且函数体必须有花括号。当函数的返回值类型显式声明时，则无论如何都不能省略等号。建议写代码时不要省略等号，避免产生不必要的错误，返回值类型最好也显式声明。</p>
 </blockquote>
 <p>函数体内部还可以嵌套函数，嵌套函数作用域是局部的，只能由函数体内调用，外部无法访问。</p>
-<h3 id="函数字面量"><a href="#函数字面量" class="headerlink" title="函数字面量"></a>函数字面量</h3><p>Scala是<strong>函数式编程语言</strong>，函数式主要思想之一就是：函数是一等(first-class)值，也就是说，一个函数和一个Int值、一个String值等地位相同。既然一个Int值可以成为函数入参、返回值、定义在函数体里、存储在变量中，那么相同地位的函数同样可以。</p>
+<h3 id="函数字面量"><a href="#函数字面量" class="headerlink" title="函数字面量"></a>函数字面量</h3><p>Scala是<strong>函数式编程语言</strong>。</p>
+<blockquote>
+<p>函数式编程有两种指导理念，第一种理念是函数是头等值(first-class values)。在函数式语言中，函数也是值，与整数或字符串处于同一地位。函数可以被当作参数传递给其他函数，可以当作结果从函数中返回或保存在变量里。可以在函数里定义其他函数，就好像在函数里定义整数一样。还可以定义匿名函数，并随意地插入到代码的任何地方，就好像使用整数字面量一样。</p>
+<p>第二种理念是程序的操作应该把输入值映射为输出值而不是就地修改数据。另一种解释是，方法不应有任何副作用(side effect)。方法与其所在环境交流的唯一方式应该是获得参数和返回结果。</p>
+</blockquote>
+<p>Scala不强迫使用函数式编程风格，必要情况下，可以写成指令式，用可变数据或有副作用的方法调用。</p>
+<blockquote>
+<p>函数副作用是指函数在正常工作任务之外对外部环境所施加的影响。例如修改了全局变量的值。</p>
+<p>函数的副作用为如果当前函数没有设置参数或设置内部声明变量的var时，当前函数的函数变量就会调用函数的父级作用域的变量，对父级作用域的变量值造成全局污染。</p>
+</blockquote>
 <p>Scala中定义函数字面量形式为：</p>
 <pre class="line-numbers language-none"><code class="language-none">(参数1: 参数1类型, 参数2: 参数2类型, ...) &#x3D;&gt; &#123; 函数体 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
@@ -584,7 +598,7 @@ add<span class="token punctuation">(</span><span class="token number">1</span><s
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> aFun<span class="token punctuation">(</span>f<span class="token operator">:</span> <span class="token punctuation">(</span><span class="token builtin">Int</span><span class="token punctuation">,</span><span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> f<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span>
 aFun<span class="token punctuation">(</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span>y<span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token punctuation">&#123;</span>x<span class="token operator">+</span>y<span class="token punctuation">&#125;</span> <span class="token punctuation">)</span>			<span class="token comment">// 返回结果res0: Int = 3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>这个例子中，定义了一个名为aFun的函数，它的入参是f函数字面量，该f函数字面量要求有两个Int类型的入参且返回结果类型也是Int。在调用函数aFun时，给出了函数字面量”(x,y) =&gt; x+y”，因为入参f处已经显式声明类型，因此此处只需给出函数字面量内容即可。这个例子相当于先确定了自变量的值，即x、y为1、2，而将函数具体功能作为了入参，和一般常理解的形式正好相反，例子也说明了函数字面量的灵活以及函数就是和变量等地位相同。</p>
+<p>这个例子中，定义了一个名为<code>aFun</code>的函数，它的入参是f函数字面量，该f函数字面量要求有两个Int类型的入参且返回结果类型也是Int。在调用函数<code>aFun</code>时，给出了函数字面量”(x,y) =&gt; x+y”，因为入参f处已经显式声明类型，因此此处只需给出函数字面量内容即可。这个例子相当于先确定了自变量的值，即x、y为1、2，而将函数具体功能作为了入参，和一般常理解的形式正好相反，例子也说明了函数字面量的灵活以及函数就是和变量等地位相同。</p>
 <h3 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h3><p>函数调用默认按参数先后顺序，但也可<strong>显式声明参数名</strong>并赋值。此外，函数入参可以有默认值。例如：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> func<span class="token punctuation">(</span>x<span class="token operator">:</span><span class="token builtin">Int</span><span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">,</span> y<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">,</span> z<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token punctuation">&#123;</span>…<span class="token punctuation">&#125;</span>
 func<span class="token punctuation">(</span>z<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span>y<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -669,7 +683,10 @@ stu<span class="token punctuation">.</span>score			<span class="token comment">/
     …
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="更纯粹的面向对象——操作符即方法"><a href="#更纯粹的面向对象——操作符即方法" class="headerlink" title="更纯粹的面向对象——操作符即方法"></a>更纯粹的面向对象——操作符即方法</h2><p>在Java中，int、char等基本类型不属于面向对象的范畴。比如只能说“1”是一个int类型的常量，却不能说它是一个int类型的对象。与之对应的，Java等OOP语言还定义了与基本类型相关的操作符。例如，有算术操作符加法“+”，它可以连接左、右两个操作数，然后算出相应的总和。</p>
+<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><blockquote>
+<p>Scala是纯粹的面向对象语言：每个值都是对象，每个操作都是方法调用。</p>
+</blockquote>
+<p>在Java中，int、char等基本类型不属于面向对象的范畴。比如只能说“1”是一个int类型的常量，却不能说它是一个int类型的对象。与之对应的，Java等OOP语言还定义了与基本类型相关的操作符。例如，有算术操作符加法“+”，它可以连接左、右两个操作数，然后算出相应的总和。</p>
 <p>但Scala追求纯粹的面向对象，在Scala标准库里定义了“class Byte”、“class  Short”、“class  Char”、“class Int”、“class  Long”、“class  Float”、“class  Double”、“class  Boolean”和“class Unit”九种值类，只不过这些类是抽象的、不可继承的，因此不能通过“new Int”这种语句来构造一个Int对象，也不能编写它们的子类，它们的对象都是由字面量来表示。例如，整数字面量“1”就是一个Int的对象。在运行时，前八种值类会被转换成对应的Java基本类型。第九个Unit类对应Java的“void”类型，即表示空值，这样就能理解返回值类型为Unit的、有副作用的函数其实是空函数。Unit类的对象由一个空括号作为字面量来表示。</p>
 <p>那操作符在Scala中其实是定义在”class Int”、”class Double”等类里的成员方法。也就是说，操作符即方法。表达式 <code>1 + 2</code>的真正形式应该是 <code>1.+(2)</code>。它的释义是：Int对象”1”调用了它的成员方法”+”，并把Int对象”2”当作参数传递给了该方法，最后这个方法会返回一个新的Int对象”3”。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span><span class="token operator">+</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>				<span class="token comment">// res0: Int = 3</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -833,7 +850,10 @@ sum									<span class="token comment">// res0: Int = 233</span><span aria-hidd
 List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span> zip Set<span class="token punctuation">(</span><span class="token string">"good"</span><span class="token punctuation">,</span> <span class="token string">"OK"</span><span class="token punctuation">)</span>
 <span class="token comment">// res1: List[(Int, String)] = List((1,good), (2,OK))</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="控制结构"><a href="#控制结构" class="headerlink" title="控制结构"></a>控制结构</h2><h3 id="if条件句"><a href="#if条件句" class="headerlink" title="if条件句"></a>if条件句</h3><p>Scala的if表达式与大多数语言是一样的。在if和每个else if后面都将接收一个Boolean类型的表达式作为参数，如果表达式的结果为true，就执行对应的操作，否则跳过。每个分支都可以包含一个表达式作为执行体，如果有多个表达式，则应该放进花括号里。</p>
+<h2 id="内建控制结构"><a href="#内建控制结构" class="headerlink" title="内建控制结构"></a>内建控制结构</h2><blockquote>
+<p>Scala没有太多的内建控制抽象，它为编写者提供了创建自己的控制抽象的能力。</p>
+</blockquote>
+<h3 id="if条件句"><a href="#if条件句" class="headerlink" title="if条件句"></a>if条件句</h3><p>Scala的if表达式与大多数语言是一样的。在if和每个else if后面都将接收一个Boolean类型的表达式作为参数，如果表达式的结果为true，就执行对应的操作，否则跳过。每个分支都可以包含一个表达式作为执行体，如果有多个表达式，则应该放进花括号里。</p>
 <h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>Scala<strong>不提倡使用while</strong>循环语句。while语句风格是指令式语言的，在纯函数式的语言里，只有表达式，不会存在像while循环这样的语法。Scala兼容两种风格，并引入了while循环，是因为某些时候用while编写的代码可阅读性更强。</p>
 <p>Scala更提倡使用函数式风格来实现功能，因为所有的while循环都可以利用函数递归调用等方法来实现功能。</p>
 <p>例如计算整数的最大公约数，指令式风格代码：</p>
