@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="Scala学习, Hexo">
-    <meta name="description" content="scala学习.一变量及数据类型变量和常量scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。">
+    <meta name="description" content="Scala学习.一变量及数据类型变量和常量Scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -470,7 +470,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="scala学习-一"><a href="#scala学习-一" class="headerlink" title="scala学习.一"></a>scala学习.一</h1><h2 id="变量及数据类型"><a href="#变量及数据类型" class="headerlink" title="变量及数据类型"></a>变量及数据类型</h2><h3 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h3><p>scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。</p>
+                <h1 id="Scala学习-一"><a href="#Scala学习-一" class="headerlink" title="Scala学习.一"></a>Scala学习.一</h1><h2 id="变量及数据类型"><a href="#变量及数据类型" class="headerlink" title="变量及数据类型"></a>变量及数据类型</h2><h3 id="变量和常量"><a href="#变量和常量" class="headerlink" title="变量和常量"></a>变量和常量</h3><p>Scala中，var表示变量，val表示常量。定义时，必须在变量名前添加关键字”var”或”val”。Scala的变量定义具有覆盖性，也就是说，如果出现了同名的变量，则后出现的变量会覆盖前面的变量。</p>
 <p>用“var”修饰的变量，可以重新赋予新的值，并且把原值抛弃，类似于Java的非final变量。在后续重新赋值时，就不用再写“var”了。而用“val”修饰的变量，则禁止被重新赋值，类似于Java的final变量，换句话说，就是只能读不能写的变量。</p>
 <p>变量命名不能以数字开头，Scala推荐的命名方法是“驼峰命名法”，即每个单词的首字母大写，并且变量名和函数名以小写字母开头，类、对象和特质则以大写字母开头。例如，“<code>val isOne</code>”，“<code>class MyClass</code>”。在首次定义变量时，就<strong>必须赋予具体的值来初始化</strong>。</p>
 <p>val表示的常量并不是说一定不会改变值，更准确地说是赋的对象是唯一的，而赋给变量的对象有可能会变。也就是说val不能再重新指向新的对象。Chisel中都是用val来定义变量，因为电路的不可变性。</p>
@@ -638,13 +638,13 @@ SS						<span class="token comment">// 打印结果</span><span aria-hidden="tru
 	<span class="token keyword">def</span> apply<span class="token punctuation">(</span>name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">new</span> Students<span class="token punctuation">(</span>name<span class="token punctuation">,</span> score<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span>
 
-<span class="token keyword">val</span> stu <span class="token operator">=</span> Students<span class="token punctuation">(</span><span class="token string">"Tom"</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>
+<span class="token keyword">val</span> stu <span class="token operator">=</span> Students<span class="token punctuation">(</span><span class="token string">"Tom"</span><span class="token punctuation">,</span><span class="token number">100</span><span class="token punctuation">)</span>	<span class="token comment">// val stu = Students.apply("Tom",100)</span>
 stu<span class="token punctuation">.</span>score			<span class="token comment">// res0: Int = 100</span>
 stu<span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">)</span>
 stu<span class="token punctuation">.</span>score			<span class="token comment">// res1: Int = 80</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>通常，会在伴生对象里定义apply的工厂方法，这样就能通过”伴生对象名(参数)”来构造对象，而伴生对象又与伴生类同名，这样代码更加简洁和易读。此外，类里也可定义一个与类相关的、具有特定行为的apply方法，可以隐式调用。</p>
+<p>通常，会在伴生对象里定义apply的工厂方法，这样就能通过”伴生对象名(参数)”来构造对象，而伴生对象又与伴生类同名，这样代码更加简洁和易读。此外，类里也可定义一个与类相关的、具有特定行为的apply方法，可以隐式调用。例子中<code>val stu = Students(&quot;Tom&quot;,100)</code>实际是<code>val stu = Students.apply(&quot;Tom&quot;,100)</code>，而<code>stu(80)</code>则是隐式调用了类<code>Students</code>中的apply方法。</p>
 <h3 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h3><p>主函数是Scala程序唯一的入口，即程序是从主函数开始运行的。要提供这样的入口，则必须在<strong>某个单例对象</strong>里定义一个名为”main”的函数，而且该函数只有一个参数，类型为字符串数组Array[String]，函数的返回类型是Unit。任何符合条件的单例对象都能成为程序的入口。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// students.scala</span>
 <span class="token keyword">class</span> Students<span class="token punctuation">(</span><span class="token keyword">val</span> name<span class="token operator">:</span> <span class="token builtin">String</span><span class="token punctuation">,</span> <span class="token keyword">var</span> score<span class="token operator">:</span> <span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
@@ -718,6 +718,141 @@ mer<span class="token punctuation">.</span>state				<span class="token comment">
 x<span class="token punctuation">.</span>display				<span class="token comment">// res0:String = I'm B.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>例子中变量x类型是超类A，但指向的是子类B，因此方法是动态绑定，指向的是子类B中的方法。</p>
+<p>如果类里包含了没有具体定义的成员——没有初始化的字段或没有函数体的方法，那么这个类就是<strong>抽象类</strong>，必须用关键字“abstract”修饰。相应的成员称为抽象成员，不需要“abstract”的修饰。因为存在抽象成员，所以这个类不可能构造出具体的对象，因为有无法初始化抽象字段或者无法执行抽象方法，所以抽象类不能通过“new”来构造实例对象。</p>
+<p>抽象类缺失的抽象成员的定义，可以由抽象类的子类来补充。也就是说，抽象类“声明”了抽象成员，却没有立即“定义”它。如果子类补齐了抽象成员的相关定义，就称子类“实现”了超类的抽象成员。相对的，我们称超类的成员是“抽象”的，而子类的成员是“具体”的。子类实现超类的抽象成员时，关键字“override”可写可不写。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">abstract</span> <span class="token keyword">class</span> A<span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> a<span class="token operator">:</span><span class="token builtin">Int</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">val</span> x <span class="token operator">=</span> <span class="token keyword">new</span> A
+<span class="token comment">// error: class A is abstract; cannot be instantiated</span>
+
+<span class="token keyword">class</span> B<span class="token punctuation">(</span><span class="token keyword">val</span> b<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token keyword">extends</span> A<span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> a <span class="token operator">=</span> b<span class="token operator">*</span><span class="token number">2</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">val</span> y <span class="token operator">=</span> <span class="token keyword">new</span> B<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+y<span class="token punctuation">.</span>a								<span class="token comment">// res0: Int = 4</span>
+y<span class="token punctuation">.</span>b								<span class="token comment">// res1: Int = 2</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>抽象类常用于定义基类，因为基类会派生出很多不同的子类，这些子类往往具有行为不同的同名成员，所以基类只需要声明有哪些公共成员，让子类去实现它们各自期望的版本。</p>
+<p>Scala<strong>没有多重继承</strong>，用特质(Trait)来替代多重继承的功能。</p>
+<h3 id="类的层次关系"><a href="#类的层次关系" class="headerlink" title="类的层次关系"></a>类的层次关系</h3><p><img src="https://img-blog.csdnimg.cn/20190208201013172.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MjkxNTA1,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>最顶部的类是抽象类Any，它是所有类的超类。</p>
+<p>再往下一层，Any类有两个子类：AnyVal和AnyRef。也就是说，所有类被分成两大部分：<strong>值类</strong>和<strong>引用类</strong>。值类也就是前面讲过的对应Java的九种基本类型，并且其中七个存在一定的隐式转换，例如Byte可以扩展成Short等等。隐式转换是Scala的一个语法，用于对象在两个类之间进行类型转换，后面章节会讲到。除了标准库里已有的隐式转换，也可以自定义隐式转换。</p>
+<p>在层次结构的底部有两个底类型——Null类和Nothing类。其中Null类是所有引用类的子类，表示空引用，即指向JVM里的空内存，这与Java的null概念是一样的。但是Null并不兼容值类，所以Scala还有一个类——Nothing，它是所有值类和引用类的子类，甚至还是Null类的子类。因此Nothing不仅表示空引用，还表示空值。Scala里有一个可选值语法，也就是把各种类型打包成一个特殊的可选值。为了表示“空”、“没有”这个特殊的概念，以及兼容各种自定义、非自定义的值和引用类，这个特殊的可选值其实就是把Nothing类进行打包。</p>
+<p>自定义的普通类和特质属于引用类。</p>
+<p>Chisel中，类继承主要用于编写接口，因为接口可以扩展，但是实际的硬件电路并没有很强烈的继承关系。</p>
+<h2 id="特质-Trait"><a href="#特质-Trait" class="headerlink" title="特质(Trait)"></a>特质(Trait)</h2><p>Scala没有多重继承，引入新的概念——特质。特质与单例对象很像，两者都不能有入参。但是，单例对象天生就是具体的，特质天生就是抽象的，不过不需要用<code>abstract</code>来说明。特质可以包含抽象成员，而单列对象不行。另外，两者都不能用new来实例化，因为特质是抽象的，而单例对象已经是具体的对象。类、单例对象和特质三者一样，内部可以包含字段和方法，甚至包含其他类、单例对象、特质的定义。</p>
+<p>特质可被其他类、单例对象和特质<strong>混入</strong>。这里使用术语<strong>混入</strong>而不是<strong>继承</strong>，是因为特质在超类方法调用上采用线性化机制，与多重继承有很大的区别。</p>
+<p>Scala只允许继承自一个类，但是对特质的混入数量却没有限制，故而可用于替代多重继承语法。要混入一个特质，可以使用关键字<code>extends</code>。但如果<code>extends</code>已经被占用了，比如已经拿去继承一个类或混入一个特质，那么后续则通过关键字<code>with</code>来混入其他特质。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> A
+<span class="token keyword">trait</span> B
+<span class="token keyword">trait</span> C
+
+<span class="token keyword">object</span> D <span class="token keyword">extends</span> A <span class="token keyword">with</span> B <span class="token keyword">with</span> C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="特质层次"><a href="#特质层次" class="headerlink" title="特质层次"></a>特质层次</h3><h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>Scala里常见的集合有：数组、列表、集、映射、序列、元组、数组缓冲和列表缓冲。</p>
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>Scala的数组类名为<strong>Array</strong>，继承自Java。Array是一个具体的类，因此可以通过new来构造一个数组对象。数组元素的类型可以是任意的，而且不同的元素类型会导致每个元素的内存大小不一样，但是所有元素的类型必须一致。</p>
+<p>数组对象必须是定长的，也就是在构造时可以选择任意长度的数组，构造完毕后就不能再更改长度了。构造数组对象的语法如下：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">new</span> Array<span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>其中，方括号里的T表示元素的类型，它可以显式声明，也可以通过传入给构造方法的对象来自动推断。圆括号里的n代表元素个数，它必须是一个非负整数，如果n等于0则表示空数组。</p>
+<p>Scala的数组下标从0开始。不过，有一点不同的是，其他语言的数组下标都是写在方括号里，而Scala的数组下标却是写在<strong>圆括号</strong>里。根据操作符即方法的思想，Scala并没有什么下标索引操作符，而是在Array类里定义了一个apply方法，该方法接收一个Int类型的参数，返回对应下标的数组元素。所以，圆括号的方法其实是隐式调用了apply方法。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> intArray <span class="token operator">=</span> <span class="token keyword">new</span> Array<span class="token punctuation">[</span><span class="token builtin">Int</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+intArray<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">1</span>
+intArray						<span class="token comment">// res0: Array[Int] = (1,0,0)</span>
+
+<span class="token keyword">val</span> charArray <span class="token operator">=</span> Array<span class="token punctuation">(</span><span class="token char">'a'</span><span class="token punctuation">,</span><span class="token char">'b'</span><span class="token punctuation">,</span><span class="token char">'c'</span><span class="token punctuation">)</span>
+charArray						<span class="token comment">// res1: Array[Char] = (a,b,c)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>除此之外，Array的伴生对象里还定义了一个apply工厂方法，因此可像例子中charArray一样直接构造数组。</p>
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><p>列表是一种基于链表的数据结构，这使得列表访问头部元素很快，往头部增加新元素也是消耗定长时间，但是对尾部进行操作则需要线性化的时间，也就是列表越大时间越长。</p>
+<p>列表类名为<strong>List</strong>，这是一个抽象类，因此不能用new来构造列表对象。但是伴生对象里有一个apply工厂方法，接收若干个参数，以数组的形式转换成列表(链表)。</p>
+<p>列表也是定长的，且每个元素的类型相同、不可再重新赋值，有点像不可写入的数组。列表元素也是从下标0开始索引，下标同样写在圆括号里。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> intList <span class="token operator">=</span> List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">5</span><span class="token punctuation">)</span>
+intList<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>						<span class="token comment">// res0: Int = 1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>列表有名为”::”的方法，可以向列表头部添加新元素。注意，这会构造一个新的列表对象，而不是直接修改旧列表，因为<strong>列表是不可变的</strong>。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1</span> <span class="token operator">::</span> List<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span>					<span class="token comment">// res0: List[Int] = List(1,2,3)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>名为”:::”的方法用于拼接左右两个列表并返回新列表：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">::</span><span class="token operator">:</span> List<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>			<span class="token comment">// res0: List[Int] = List(1,2,2,1)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>List有一个子对象——Nil，它表示空列表。Nil的类型是List[Nothing]，List[Nothing]是所有列表的子类，即Nil兼容所有元素。既然Nil是一个空列表对象，那么它同样能调用方法“::”，通过Nil和::就能构造出一个列表，例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1</span> <span class="token operator">::</span> <span class="token number">2</span> <span class="token operator">::</span> <span class="token number">3</span> <span class="token operator">::</span> Nil				<span class="token comment">// res0: List[Int] = List(1,2,3)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>用apply工厂方法构造其实是上述方式的等效形式。展开来解释就是：在空列表Nil的头部添加了一个元素3，构成了列表List(3)；随后，继续在头部添加元素2，构成列表List(2, 3)；最后，在头部添加元素1，得到最终的List(1, 2, 3)。</p>
+<p>数组与列表元素不仅可以是值类型，它们也可以是自定义的类，甚至是数组和列表本身，构成嵌套的数组与列表。此外，如果元素类型是Any，那么数组和列表也就可以包含不同类型的元素。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">List<span class="token punctuation">(</span>Array<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Array<span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// res0: List[Array[Int]] = List(Array(1, 2, 3), Array(10, 100, 100))</span>
+
+List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token char">'1'</span><span class="token punctuation">,</span> <span class="token string">"1"</span><span class="token punctuation">)</span>
+<span class="token comment">// res1: List[Any] = List(1,1,1)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>例子中的三个1代表类型是不同的，即分别是Int、Char、String类型。</p>
+<h3 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h3><p>元组是可以包括不同类型的对象的集合，是不可变的。</p>
+<p>元组最常用的地方是作为函数的返回值。由于函数只有一个返回语句，但如果想返回多个表达式或对象，就可以把它们包在一个元组里返回。</p>
+<p>因为元组含有不同类型的对象，所以不可遍历，也就无法通过下标来索引，只能通过“_1”、“_2”……这样来访问每个元素。注意第一个元素就是“_1”，不是“_0”。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> t <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token string">"God"</span><span class="token punctuation">,</span> <span class="token char">'A'</span><span class="token punctuation">,</span> <span class="token number">2333</span><span class="token punctuation">)</span>			<span class="token comment">// t:(String,Char,Int) = (God,A,2333)</span>
+t<span class="token punctuation">.</span>_1								<span class="token comment">// res0: String = God</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>实际上，元组并不是一个类，而是一系列类：Tuple1、Tuple2、Tuple3……Tuple22。这些类都是具体的，因此除了通过字面量的写法构造元组，也可以显式地通过“new TupleX(元组元素)”来构造。其中，每个数字代表元组包含的元素数量，也就是说元组最多只能包含22个元素，除非自定义Tuple23、Tuple24……不过这没有意义，因为元组可以嵌套元组，并不妨碍元组包含任意数量的元素。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> getType<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Any</span><span class="token punctuation">)</span> <span class="token operator">=</span> x<span class="token punctuation">.</span>getClass
+getType<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>							<span class="token comment">// res0: Class[_] = class java.lang.Integer</span>
+getType<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token char">'s'</span><span class="token punctuation">,</span><span class="token string">"s"</span><span class="token punctuation">)</span>					<span class="token comment">// res1: Class[_] = class scala.Tuple3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h3><p>顾名思义，映射体现的是一种对应关系，它是一系列“键-值”对的集合，关键词<strong>Map</strong>。键和值的类型可以是任意的，但是每个键-值对的类型必须一致。键-值对的写法是“<strong>键 -&gt; 值</strong>”。</p>
+<p>实际上，映射并不是一个类，而是一个特质。所以无法用new构建映射对象，只能通过伴生对象里的apply工厂方法来构造映射类型的对象。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> map <span class="token operator">=</span> Map<span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-></span> <span class="token string">"+"</span><span class="token punctuation">,</span> <span class="token number">2</span> <span class="token operator">-></span> <span class="token string">"-"</span><span class="token punctuation">,</span> <span class="token number">3</span> <span class="token operator">-></span> <span class="token string">"*"</span><span class="token punctuation">,</span> <span class="token number">4</span> <span class="token operator">-></span> <span class="token string">"/"</span><span class="token punctuation">)</span>
+
+map<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span>								<span class="token comment">// res0: String = /</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>表达式“object1 -&gt; object2”实际就是一个对偶(二元组)，因此键-值对也可以写成对偶的形式。例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> tupleMap <span class="token operator">=</span> Map<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token char">'a'</span><span class="token punctuation">,</span> <span class="token char">'A'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token char">'b'</span><span class="token punctuation">,</span> <span class="token char">'B'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">// 等同于 val tupleMap = Map('a' -> 'A','b' -> 'B')</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="集"><a href="#集" class="headerlink" title="集"></a>集</h3><p>集和映射一样，也是一个特质，也只能通过apply工厂方法构建对象，关键词<strong>Set</strong>。集只能包含字面值不相同的同类型元素。当构建时传入了重复参数，那么会过滤掉多余的，只取一个。集的apply方法是测试是否包含传入的参数，返回true或false，而不是通过下标来索引元素。例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> set <span class="token operator">=</span> Set<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">233</span><span class="token punctuation">)</span>
+set<span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span>							<span class="token comment">// res0: Boolean = false</span>
+set<span class="token punctuation">(</span><span class="token number">233</span><span class="token punctuation">)</span>							<span class="token comment">// res1: Boolean = true</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="集合常用方法"><a href="#集合常用方法" class="headerlink" title="集合常用方法"></a>集合常用方法</h3><p><strong>map</strong>：map方法接收一个无副作用的函数作为入参，对调用该方法的集合的每个元素应用入参函数，并把所得结果全部打包在一个集合里返回。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Array<span class="token punctuation">(</span><span class="token string">"apple"</span><span class="token punctuation">,</span> <span class="token string">"orange"</span><span class="token punctuation">,</span> <span class="token string">"pear"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>map<span class="token punctuation">(</span>_ <span class="token operator">+</span> <span class="token string">"s"</span><span class="token punctuation">)</span>
+<span class="token comment">// res0: Array[String] = Array(apples, oranges, pears)</span>
+List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">.</span>map<span class="token punctuation">(</span>_<span class="token operator">*</span><span class="token number">2</span><span class="token punctuation">)</span>
+<span class="token comment">// res1: List[Int] = List(2,4,6)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>foreach</strong>：foreach方法与map方法类似，不过它的入参是一个有副作用的函数。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">var</span> sum <span class="token operator">=</span> <span class="token number">0</span>
+Set<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">234</span><span class="token punctuation">)</span><span class="token punctuation">.</span>foreach<span class="token punctuation">(</span>sum <span class="token operator">+=</span> _<span class="token punctuation">)</span>
+sum									<span class="token comment">// res0: Int = 233</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>zip</strong>：zip方法把两个可迭代的集合一一对应，构成若干个对偶。如果其中一个集合比另一个长，则忽略多余的元素。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span> zip Array<span class="token punctuation">(</span><span class="token char">'1'</span><span class="token punctuation">,</span> <span class="token char">'2'</span><span class="token punctuation">,</span> <span class="token char">'3'</span><span class="token punctuation">)</span>
+<span class="token comment">// res0: List[(Int, Char)] = List((1,1), (2,2), (3,3))</span>
+List<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span> zip Set<span class="token punctuation">(</span><span class="token string">"good"</span><span class="token punctuation">,</span> <span class="token string">"OK"</span><span class="token punctuation">)</span>
+<span class="token comment">// res1: List[(Int, String)] = List((1,good), (2,OK))</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="控制结构"><a href="#控制结构" class="headerlink" title="控制结构"></a>控制结构</h2><h3 id="if条件句"><a href="#if条件句" class="headerlink" title="if条件句"></a>if条件句</h3><p>Scala的if表达式与大多数语言是一样的。在if和每个else if后面都将接收一个Boolean类型的表达式作为参数，如果表达式的结果为true，就执行对应的操作，否则跳过。每个分支都可以包含一个表达式作为执行体，如果有多个表达式，则应该放进花括号里。</p>
+<h3 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h3><p>Scala<strong>不提倡使用while</strong>循环语句。while语句风格是指令式语言的，在纯函数式的语言里，只有表达式，不会存在像while循环这样的语法。Scala兼容两种风格，并引入了while循环，是因为某些时候用while编写的代码可阅读性更强。</p>
+<p>Scala更提倡使用函数式风格来实现功能，因为所有的while循环都可以利用函数递归调用等方法来实现功能。</p>
+<p>例如计算整数的最大公约数，指令式风格代码：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> gcdLoop<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Long</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Long</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Long</span> <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">var</span> a <span class="token operator">=</span> x
+    <span class="token keyword">var</span> b <span class="token operator">=</span> y
+	<span class="token keyword">while</span> <span class="token punctuation">(</span>a <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">val</span> temp <span class="token operator">=</span> a
+        a <span class="token operator">=</span> b <span class="token operator">%</span> a
+        b <span class="token operator">=</span> temp
+    <span class="token punctuation">&#125;</span>
+    b
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>函数式风格代码：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">def</span> gcd<span class="token punctuation">(</span>x<span class="token operator">:</span> <span class="token builtin">Long</span><span class="token punctuation">,</span> y<span class="token operator">:</span> <span class="token builtin">Long</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Long</span> <span class="token operator">=</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>y <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> x <span class="token keyword">else</span> gcd<span class="token punctuation">(</span>y<span class="token punctuation">,</span> x <span class="token operator">%</span> y<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>实现循环，Scala推荐使用for表达式。</p>
 
                 
             </div>
