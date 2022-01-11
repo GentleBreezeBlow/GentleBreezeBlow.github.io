@@ -5,7 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="chisel_01, Hexo">
-    <meta name="description" content="">
+    <meta name="description" content="Chisel学习.一一个简单例子在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。
+以与门为例，src">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -470,7 +471,63 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h1 id="Chisel学习-一"><a href="#Chisel学习-一" class="headerlink" title="Chisel学习.一"></a>Chisel学习.一</h1><h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
+<p>以与门为例，src/main/scala创建AND.scala：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// AND.scala</span>
+<span class="token keyword">package</span> <span class="token namespace">test</span>
+ 
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span></span>_
+ 
+<span class="token keyword">class</span> AND <span class="token keyword">extends</span> RawModule <span class="token punctuation">&#123;</span>
+  <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> a <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> b <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> c <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+ 
+  io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a <span class="token operator">&amp;</span> io<span class="token punctuation">.</span>b
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>src/main/scala创建ANDtest.scala:</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// ANDtest.scala</span>
+<span class="token keyword">package</span> <span class="token namespace">test</span>
+ 
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+ 
+<span class="token keyword">object</span> testMain <span class="token keyword">extends</span> App <span class="token punctuation">&#123;</span>
+  Driver<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>args<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token keyword">new</span> AND<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>执行命令<code>sbt &quot;test:runMain test.testMain --target-dir generated/and&quot;</code>就会在当前路径生成一个generated文件夹，里面有一个and文件夹。生成的AND.v代码：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">module</span> <span class="token function">AND</span><span class="token punctuation">(</span>
+     <span class="token keyword">input</span>   io_a<span class="token punctuation">,</span>
+     <span class="token keyword">input</span>   io_b<span class="token punctuation">,</span>
+     <span class="token keyword">output</span>  io_c
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token keyword">assign</span> io_c <span class="token operator">=</span> io_a <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span>
+<span class="token keyword">endmodule</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="注意问题"><a href="#注意问题" class="headerlink" title="注意问题"></a>注意问题</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="Chisel自定义数据类型"><a href="#Chisel自定义数据类型" class="headerlink" title="Chisel自定义数据类型"></a>Chisel自定义数据类型</h3><p><img src="https://img-blog.csdnimg.cn/20190218003949321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MjkxNTA1,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>Chisel常用的类型就五种：UInt、SInt、Bool、Bundle和Vec[T]。图中绿色方块是class，红色是object，蓝色是trait，箭头指向的是超类和混入的特质。</p>
+<p>Chisel定义了自己的一套数据类型，构建硬件电路要用Chisel的数据类型，在使用时不要与Scala数据类型混淆。所有数据类型都继承自抽象基类Data，它混入了两个特质HasId和NamedComponent。在实际硬件构成里，应该关注Data类的两大子类：聚合类Aggregate和元素类Element。</p>
+<p>聚合类Aggregate的常用子类是向量类Vec[T]和包裹类Bundle。Vec[T]类用于包含相同的元素，元素类型T可以是任意的Data子类。因为Vec[T]混入了特质IndexedSeq[T]，所以向量的元素能从下标0开始索引访问。Bundle类用于被自定义的类继承，这样自定义的类就能包含任意Data的子类对象，常用于协助构造模块的端口，故而衍生出了一些预定义的端口子类。混合向量类MixedVec[T]是Chisel3.2以上版本添加的语法，它与Vec[T]的不同在于可以包含不同类型的元素。</p>
+<p>元素类Element类衍生出了Analog、Bits和Clock三个子类，单例对象DontCare和特质Reset。Analog用于在黑盒中模拟inout端口，目前在实际Chisel里并无其他用途。Bits类的两个子类<strong>SInt</strong>和<strong>UInt</strong>是最常用的两个数据类型，它们是用补码表示的有符号整数和无符号整数。不仅用来协助定义端口位宽，还用来进行赋值。FixedPoint类提供的API带有试验性质，而且将来可能会发生改变，所以不常用。<strong>Bool</strong>类是Chisel自己的布尔类型，<strong>区别于Scala的Boolean</strong>。Bool类是UInt类的子类，因为它可以看成是1bit的UInt，而且它被混入Reset特质，因为复位信号都是用Bool类型的线网或寄存器使能的。此外，Bits类混入了特质ToBoolable，也就是说FixedPoint、SInt和UInt都能转换成多bit的Bool类型。Clock类表示时钟，<strong>Chisel里的时钟和复位是专门的一个类型</strong>，并不像Verilog里那样是1bit的线网。复位类型Reset也是如此。单例对象DontCare用于赋值给未驱动的端口或线网，防止编译器报错。</p>
+<h3 id="数据字面量"><a href="#数据字面量" class="headerlink" title="数据字面量"></a>数据字面量</h3><p>能够表示具体值的数据类型为UInt、SInt和Bool。对于UInt，可以构成任意位宽的线网或寄存器。对于SInt，在Chisel里会按补码解读，转换成Verilog后会使用系统函数$signed，这是可综合的。对于Bool，转换成Verilog后就是1bit的线网或寄存器。</p>
+<p><strong>Chisel本质依旧是Scala语言</strong>，所以我们输入的数据字面量最初依旧是Scala数据类型的数据字面量，要转为Chisel所用数据类型，要写成类似”1.U”的格式。这是因为Chisel定义了一系列的隐式类：fromBigIntToLiteral、fromtIntToLiteral、fromtLongToLiteral、fromStringToLiteral、fromBooleanToLiteral、fromIntToWidth。</p>
+<p>以隐式类fromtIntToLiteral为例，存在一个同名的隐式转换，把相应的Scala的Int对象转换成一个fromtIntToLiteral的对象。而fromtIntToLiteral类有两个方法U和S，分别构造一个等值的UInt对象和SInt对象。再加上Scala的基本值类都是用字面量构造对象，所以要表示一个UInt对象，可以写成“1.U”的格式，这样编译器会插入隐式转换，变成“fromtIntToLiteral(1).U”，进而构造出字面值为“1”的UInt对象。同理，也可以构造SInt。还有相同行为的方法asUInt和asSInt。</p>
+<p>从几个隐式类的名字就可以看出，可以通过BigInt、Int、Long和String四种类型的Scala字面量来构造UInt和SInt。对于字符串类型的字面量，Chisel编译器默认也是十进制的，但是可以加上首字母“h”、“o”、“b”来分别表示十六进制、八进制和二进制。此外，字符串字面量可以用下划线间隔。</p>
+<p>可以通过Boolean类型的字面量——true和false——来构造fromBooleanToLiteral类型的对象，然后调用名为B和asBool的方法进一步构造Bool类型的对象。例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
+
+<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span>
+
+<span class="token string">"b0101"</span><span class="token punctuation">.</span>U     		<span class="token comment">// 字面值为“5”的UInt对象</span>
+
+<span class="token boolean">true</span><span class="token punctuation">.</span>B            	<span class="token comment">// 字面值为“true”的Bool对象 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
                 
             </div>
             <hr/>
@@ -760,13 +817,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/09/hello-world/">
+                <a href="/2022/01/07/scala-01/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Scala学习">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title">Scala学习</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -777,7 +834,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-09
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-07
                             </span>
                         <span class="publish-author">
                             
@@ -786,6 +843,14 @@
                             
                         </span>
                     </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Scala/">
+                        <span class="chip bg-color">Scala</span>
+                    </a>
+                    
                 </div>
                 
             </div>
