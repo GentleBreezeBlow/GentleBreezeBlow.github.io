@@ -5,8 +5,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="chisel_01, Hexo">
-    <meta name="description" content="Chisel学习.一一个简单例子在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。
-以与门为例，src">
+    <meta name="description" content="Chisel学习.一它是托管嵌入式DSL的好语言。
+它有一个强大而优雅的库，用于处理各种数据集合。
+它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。
+它具有强大的功能表达和传递方式。
+Chipel、Chijel和Ch">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -471,7 +474,43 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Chisel学习-一"><a href="#Chisel学习-一" class="headerlink" title="Chisel学习.一"></a>Chisel学习.一</h1><h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
+                <h1 id="Chisel学习-一"><a href="#Chisel学习-一" class="headerlink" title="Chisel学习.一"></a>Chisel学习.一</h1><p>它是托管嵌入式DSL的好语言。</p>
+<p>它有一个强大而优雅的库，用于处理各种数据集合。</p>
+<p>它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。</p>
+<p>它具有强大的功能表达和传递方式。</p>
+<p>Chipel、Chijel和Chicel的效果不如凿子好。</p>
+<p>Chisel模块声明时不包括Clock和Reset，这些信号是隐式生成的，在大部分设计中处理这些底层细节是不方便的，Chisel提供的寄存器如果需要，会自动连接Clock和Reset。但目前只能生成同步复位的电路。</p>
+<h2 id="基本组成部分"><a href="#基本组成部分" class="headerlink" title="基本组成部分"></a>基本组成部分</h2><h3 id="信号类型和常量"><a href="#信号类型和常量" class="headerlink" title="信号类型和常量"></a>信号类型和常量</h3><p>Chisel提供了三种数据类型用来描述型号，组合逻辑，和寄存器：Bits， UInt和SInt。 UInt和SInt是Bits的拓展，并且所有的三种类型代表bits的矢量。UInt表示这个bits的矢量是一个无符号的整型，SInt表示一个有符号的整型。以下是不同类型的定义：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 8位Bits</span>
+UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 8位无符号整型</span>
+SInt<span class="token punctuation">(</span><span class="token number">10.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 10位有符号整型</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>UInt、SInt、Bits的矢量宽度被Chisel的Width类型定义：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 宽度为1的Bits类型</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>字面量可以通过Scala定义并转为Chisel类型：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
+<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span>
+<span class="token string">"b0101"</span><span class="token punctuation">.</span>U     		<span class="token comment">// 字面值为“5”的UInt对象</span>
+<span class="token boolean">true</span><span class="token punctuation">.</span>B            	<span class="token comment">// 字面值为“true”的Bool对象 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>字面量同样可以使用Width类型来定义宽度：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">8.</span>U<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>			<span class="token comment">// 一个4位的常量8</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>因此要注意<code>8.U</code>和<code>4.W</code>这种表达方式，可以认为它是一个整型常量附带一个类型，类似于Scala中的<code>8L</code>，代表长整型。这样就可能会导致犯错，例如<code>1.U(32)</code>不会定义一个32位宽的代表1的常量，相反，表达式<code>(32)</code>会被翻译为从32位抓取数值，结果是一个常量0。</p>
+<p>对于其他进制的字面量，可以使用字符串来定义，十六进制是h，八进制是o，二进制是b，下划线是被忽略的。以下例子都是常量255的定义，并且省略位宽由Chisel自动推断。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token string">"hff"</span><span class="token punctuation">.</span>U
+<span class="token string">"o377"</span><span class="token punctuation">.</span>U
+<span class="token string">"b1111_1111"</span><span class="token punctuation">.</span>U<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>Chisel定义了Bool类型来表示逻辑true或false，通过转换Scala中的Boolean到Chisel自定义的Bool类型：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token boolean">true</span><span class="token punctuation">.</span>B
+<span class="token boolean">false</span><span class="token punctuation">.</span>B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+
+
+<p>Bundle表示不同类型的组信号，Vec表示一个可索引的相同类型的信号。</p>
+<h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
 <p>以与门为例，src/main/scala创建AND.scala：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// AND.scala</span>
 <span class="token keyword">package</span> <span class="token namespace">test</span>
