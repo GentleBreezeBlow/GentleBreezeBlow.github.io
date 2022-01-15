@@ -4,12 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="chisel_01, Hexo">
-    <meta name="description" content="Chisel学习.一它是托管嵌入式DSL的好语言。
-它有一个强大而优雅的库，用于处理各种数据集合。
-它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。
-它具有强大的功能表达和传递方式。
-Chipel、Chijel和Ch">
+    <meta name="keywords" content="Chisel3问题记录, Hexo">
+    <meta name="description" content="Chisel3 学习过程问题记录2022-01-15问题描述初学Chisel，学到Chisel可以隐式声明时钟和复位，而且默认复位是同步复位、高电平复位。于是就想着按照网上的例子动手操作，使用教程的代码，生成Verilog失败，错误如下：
+">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -21,7 +18,7 @@ Chipel、Chijel和Ch">
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>chisel_01 | Hexo</title>
+    <title>Chisel3问题记录 | Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -313,12 +310,12 @@ Chipel、Chijel和Ch">
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">chisel_01</h1>
+                    <h1 class="description center-align post-title">Chisel3问题记录</h1>
                 </div>
             </div>
         </div>
@@ -450,7 +447,7 @@ Chipel、Chijel和Ch">
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-01-11
+                    2022-01-15
                 </div>
                 
 
@@ -474,49 +471,17 @@ Chipel、Chijel和Ch">
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Chisel学习-一"><a href="#Chisel学习-一" class="headerlink" title="Chisel学习.一"></a>Chisel学习.一</h1><p>它是托管嵌入式DSL的好语言。</p>
-<p>它有一个强大而优雅的库，用于处理各种数据集合。</p>
-<p>它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。</p>
-<p>它具有强大的功能表达和传递方式。</p>
-<p>Chipel、Chijel和Chicel的效果不如凿子好。</p>
-<p>Chisel模块声明时不包括Clock和Reset，这些信号是隐式生成的，在大部分设计中处理这些底层细节是不方便的，Chisel提供的寄存器如果需要，会自动连接Clock和Reset。但目前只能生成<strong>同步复位</strong>的电路。</p>
-<h2 id="基本组成部分"><a href="#基本组成部分" class="headerlink" title="基本组成部分"></a>基本组成部分</h2><h3 id="信号类型和常量"><a href="#信号类型和常量" class="headerlink" title="信号类型和常量"></a>信号类型和常量</h3><p>Chisel提供了三种数据类型用来描述型号，组合逻辑，和寄存器：Bits， UInt和SInt。 UInt和SInt是Bits的拓展，并且所有的三种类型代表bits的矢量。UInt表示这个bits的矢量是一个无符号的整型，SInt表示一个有符号的整型。以下是不同类型的定义：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 8位Bits</span>
-UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 8位无符号整型</span>
-SInt<span class="token punctuation">(</span><span class="token number">10.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 10位有符号整型</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>UInt、SInt、Bits的矢量宽度被Chisel的Width类型定义：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 宽度为1的Bits类型</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>字面量可以通过Scala定义并转为Chisel类型：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
-<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span>
-<span class="token string">"b0101"</span><span class="token punctuation">.</span>U     		<span class="token comment">// 字面值为“5”的UInt对象</span>
-<span class="token boolean">true</span><span class="token punctuation">.</span>B            	<span class="token comment">// 字面值为“true”的Bool对象 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-
-<p>字面量同样可以使用Width类型来定义宽度：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">8.</span>U<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>			<span class="token comment">// 一个4位的常量8</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>因此要注意<code>8.U</code>和<code>4.W</code>这种表达方式，可以认为它是一个整型常量附带一个类型，类似于Scala中的<code>8L</code>，代表长整型。这样就可能会导致犯错，例如<code>1.U(32)</code>不会定义一个32位宽的代表1的常量，相反，表达式<code>(32)</code>会被翻译为从32位抓取数值，结果是一个常量0。</p>
-<p>对于其他进制的字面量，可以使用字符串来定义，十六进制是h，八进制是o，二进制是b，下划线是被忽略的。以下例子都是常量255的定义，并且省略位宽由Chisel自动推断。</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token string">"hff"</span><span class="token punctuation">.</span>U
-<span class="token string">"o377"</span><span class="token punctuation">.</span>U
-<span class="token string">"b1111_1111"</span><span class="token punctuation">.</span>U<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-
-<p>Chisel定义了Bool类型来表示逻辑true或false，通过转换Scala中的Boolean到Chisel自定义的Bool类型：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token boolean">true</span><span class="token punctuation">.</span>B
-<span class="token boolean">false</span><span class="token punctuation">.</span>B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-
-
-
-<p>Bundle表示不同类型的组信号，Vec表示一个可索引的相同类型的信号。</p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>PeekPokeTester Chisel提供的testbench。</p>
-<h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
-<p>以与门为例，src/main/scala创建AND.scala：</p>
+                <h1 id="Chisel3-学习过程问题记录"><a href="#Chisel3-学习过程问题记录" class="headerlink" title="Chisel3 学习过程问题记录"></a>Chisel3 学习过程问题记录</h1><h2 id="2022-01-15"><a href="#2022-01-15" class="headerlink" title="2022-01-15"></a>2022-01-15</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>初学Chisel，学到Chisel可以隐式声明时钟和复位，而且默认复位是同步复位、高电平复位。于是就想着按照网上的例子动手操作，使用教程的代码，生成Verilog失败，错误如下：</p>
+<blockquote>
+<p>Elaborating design…<br>[error]     at … ()<br>[error]     at test.AND.$anonfun$reg$2(AND.scala:15)<br>[error]     at chisel3.internal.prefix$.apply(prefix.scala:49)<br>[error]     at test.AND.$anonfun$reg$1(AND.scala:15)<br>[error]     at chisel3.internal.plugin.package$.autoNameRecursively(package.scala:52)<br>[error]     at test.AND.<init>(AND.scala:15)<br>[error]     at test.testMain$.$anonfun$new$1(ANDtest.scala:7)<br>[error]     at … ()<br>[error]     at … (Stack trace trimmed to user code only. Rerun with –full-stacktrace to see the full stack trace)</p>
+</blockquote>
+<p>错误信息看不懂。</p>
+<p>Chisel代码AND.scala:</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// AND.scala</span>
 <span class="token keyword">package</span> <span class="token namespace">test</span>
  
 <span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span>_
 <span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span></span>_
  
 <span class="token keyword">class</span> AND <span class="token keyword">extends</span> RawModule <span class="token punctuation">&#123;</span>
@@ -525,11 +490,17 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
     <span class="token keyword">val</span> b <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
     <span class="token keyword">val</span> c <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
   <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
- 
-  io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a <span class="token operator">&amp;</span> io<span class="token punctuation">.</span>b
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>src/main/scala创建ANDtest.scala:</p>
+  <span class="token keyword">val</span> rega <span class="token operator">=</span> RegInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  rega <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a
+  <span class="token keyword">val</span> regb <span class="token operator">=</span> RegInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  regb <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>b
+  <span class="token comment">//reg := io.a &amp; io.b </span>
+  io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> rega <span class="token operator">&amp;</span> regb
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>生成Verilog的主函数ANDtest.scala:</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// ANDtest.scala</span>
 <span class="token keyword">package</span> <span class="token namespace">test</span>
  
@@ -539,34 +510,29 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
   Driver<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>args<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token keyword">new</span> AND<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>执行命令<code>sbt &quot;test:runMain test.testMain --target-dir generated/and&quot;</code>就会在当前路径生成一个generated文件夹，里面有一个and文件夹。生成的AND.v代码：</p>
-<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">module</span> <span class="token function">AND</span><span class="token punctuation">(</span>
-     <span class="token keyword">input</span>   io_a<span class="token punctuation">,</span>
-     <span class="token keyword">input</span>   io_b<span class="token punctuation">,</span>
-     <span class="token keyword">output</span>  io_c
-<span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token keyword">assign</span> io_c <span class="token operator">=</span> io_a <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span>
-<span class="token keyword">endmodule</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>因看不懂错误信息，怀疑是否是Scala和Chisel版本问题，使用重新克隆的chisel-template，Scala版本是2.13.7，Chisel是3.5.0，无法生成Verilog，错误找不到主函数：</p>
+<blockquote>
+<p>[info] compiling 2 Scala sources to /home/ly/test/chisel-template/target/scala-2.13/test-classes …<br>[error] /home/ly/test/chisel-template/src/test/scala/ANDtest.scala:7:3: not found: value Driver<br>[error]   Driver.execute(args, () =&gt; new AND)<br>[error]   ^<br>[error] one error found<br>[error] (Test / compileIncremental) Compilation failed<br>[error] Total time: 655 s (10:55), completed 2022年1月15日 下午9:15:49</p>
+</blockquote>
+<p>最后查找原因得知，<code>Driver</code>是属于Chisel官方不推荐的函数，也许是3.5.0移除了该函数，Chisel推荐使用<code>emitVerilog</code>，API：<a target="_blank" rel="noopener" href="https://www.chisel-lang.org/api/latest/chisel3/emitVerilog$.html">chisel3_API_emitVerilog</a> 更改之后ANDtest.scala：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// ANDtest.scala</span>
+<span class="token keyword">package</span> <span class="token namespace">test</span>
+ 
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+ 
+<span class="token keyword">object</span> testMain <span class="token keyword">extends</span> App <span class="token punctuation">&#123;</span>
+  <span class="token punctuation">(</span><span class="token keyword">new</span> chisel3<span class="token punctuation">.</span>stage<span class="token punctuation">.</span>ChiselStage<span class="token punctuation">)</span><span class="token punctuation">.</span>emitVerilog<span class="token punctuation">(</span> <span class="token keyword">new</span> AND<span class="token punctuation">,</span>args<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="Chisel自定义数据类型"><a href="#Chisel自定义数据类型" class="headerlink" title="Chisel自定义数据类型"></a>Chisel自定义数据类型</h3><p><img src="https://img-blog.csdnimg.cn/20190218003949321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MjkxNTA1,size_16,color_FFFFFF,t_70" alt="img"></p>
-<p>Chisel常用的类型就五种：UInt、SInt、Bool、Bundle和Vec[T]。图中绿色方块是class，红色是object，蓝色是trait，箭头指向的是超类和混入的特质。</p>
-<p>Chisel定义了自己的一套数据类型，构建硬件电路要用Chisel的数据类型，在使用时不要与Scala数据类型混淆。所有数据类型都继承自抽象基类Data，它混入了两个特质HasId和NamedComponent。在实际硬件构成里，应该关注Data类的两大子类：聚合类Aggregate和元素类Element。</p>
-<p>聚合类Aggregate的常用子类是向量类Vec[T]和包裹类Bundle。Vec[T]类用于包含相同的元素，元素类型T可以是任意的Data子类。因为Vec[T]混入了特质IndexedSeq[T]，所以向量的元素能从下标0开始索引访问。Bundle类用于被自定义的类继承，这样自定义的类就能包含任意Data的子类对象，常用于协助构造模块的端口，故而衍生出了一些预定义的端口子类。混合向量类MixedVec[T]是Chisel3.2以上版本添加的语法，它与Vec[T]的不同在于可以包含不同类型的元素。</p>
-<p>元素类Element类衍生出了Analog、Bits和Clock三个子类，单例对象DontCare和特质Reset。Analog用于在黑盒中模拟inout端口，目前在实际Chisel里并无其他用途。Bits类的两个子类<strong>SInt</strong>和<strong>UInt</strong>是最常用的两个数据类型，它们是用补码表示的有符号整数和无符号整数。不仅用来协助定义端口位宽，还用来进行赋值。FixedPoint类提供的API带有试验性质，而且将来可能会发生改变，所以不常用。<strong>Bool</strong>类是Chisel自己的布尔类型，<strong>区别于Scala的Boolean</strong>。Bool类是UInt类的子类，因为它可以看成是1bit的UInt，而且它被混入Reset特质，因为复位信号都是用Bool类型的线网或寄存器使能的。此外，Bits类混入了特质ToBoolable，也就是说FixedPoint、SInt和UInt都能转换成多bit的Bool类型。Clock类表示时钟，<strong>Chisel里的时钟和复位是专门的一个类型</strong>，并不像Verilog里那样是1bit的线网。复位类型Reset也是如此。单例对象DontCare用于赋值给未驱动的端口或线网，防止编译器报错。</p>
-<h3 id="数据字面量"><a href="#数据字面量" class="headerlink" title="数据字面量"></a>数据字面量</h3><p>能够表示具体值的数据类型为UInt、SInt和Bool。对于UInt，可以构成任意位宽的线网或寄存器。对于SInt，在Chisel里会按补码解读，转换成Verilog后会使用系统函数$signed，这是可综合的。对于Bool，转换成Verilog后就是1bit的线网或寄存器。</p>
-<p><strong>Chisel本质依旧是Scala语言</strong>，所以我们输入的数据字面量最初依旧是Scala数据类型的数据字面量，要转为Chisel所用数据类型，要写成类似”1.U”的格式。这是因为Chisel定义了一系列的隐式类：fromBigIntToLiteral、fromtIntToLiteral、fromtLongToLiteral、fromStringToLiteral、fromBooleanToLiteral、fromIntToWidth。</p>
-<p>以隐式类fromtIntToLiteral为例，存在一个同名的隐式转换，把相应的Scala的Int对象转换成一个fromtIntToLiteral的对象。而fromtIntToLiteral类有两个方法U和S，分别构造一个等值的UInt对象和SInt对象。再加上Scala的基本值类都是用字面量构造对象，所以要表示一个UInt对象，可以写成“1.U”的格式，这样编译器会插入隐式转换，变成“fromtIntToLiteral(1).U”，进而构造出字面值为“1”的UInt对象。同理，也可以构造SInt。还有相同行为的方法asUInt和asSInt。</p>
-<p>从几个隐式类的名字就可以看出，可以通过BigInt、Int、Long和String四种类型的Scala字面量来构造UInt和SInt。对于字符串类型的字面量，Chisel编译器默认也是十进制的，但是可以加上首字母“h”、“o”、“b”来分别表示十六进制、八进制和二进制。此外，字符串字面量可以用下划线间隔。</p>
-<p>可以通过Boolean类型的字面量——true和false——来构造fromBooleanToLiteral类型的对象，然后调用名为B和asBool的方法进一步构造Bool类型的对象。例如：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
-
-<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span>
-
-<span class="token string">"b0101"</span><span class="token punctuation">.</span>U     		<span class="token comment">// 字面值为“5”的UInt对象</span>
-
-<span class="token boolean">true</span><span class="token punctuation">.</span>B            	<span class="token comment">// 字面值为“true”的Bool对象 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
+<p>之后生成Verilog依旧出错，错误信息：</p>
+<blockquote>
+<p>[info] running test.testMain –target-dir generated/and<br>[error] (run-main-0) chisel3.internal.ChiselException: Error: No implicit clock<br>[error] chisel3.internal.ChiselException: Error: No implicit clock.<br>[error]     at … ()<br>[error]     at test.AND.$anonfun$reg$2(AND.scala:15)<br>[error]     at chisel3.internal.prefix$.apply(prefix.scala:48)<br>[error]     at test.AND.$anonfun$reg$1(AND.scala:15)<br>[error]     at chisel3.internal.plugin.package$.autoNameRecursively(package.scala:33)<br>[error]     at test.AND.<init>(AND.scala:15)<br>[error]     at test.testMain$.$anonfun$new$1(ANDtest.scala:8)<br>[error]     at … ()<br>[error]     at … (Stack trace trimmed to user code only. Rerun with –full-stacktrace to see the full stack trace)<br>[error] stack trace is suppressed; run last Test / bgRunMain for the full outpu<br>[error] Nonzero exit code: 1<br>[error] (Test / runMain) Nonzero exit code: 1</p>
+</blockquote>
+<p>这次的错误信息终于可以看懂，原因出在<code>No implicit clock</code>，没有隐式时钟，但Chisel明明是无需声明时钟和复位的，最后在官方小组查到信息<a target="_blank" rel="noopener" href="https://groups.google.com/g/chisel-users/c/ixalgSaK0Gg">chisel-users</a> :</p>
+<blockquote>
+<p>As the error message says, you need an implicit clock and reset, which is provided when you’re in a <code>Module</code> or <code>withClockAndReset</code> scope. In particular, <code>experimental.RawModule</code> does NOT provide an implicit clock and reset within its scope, so attempting to instantiate Reg in there will fail. Try placing the Reg call within a <code>withClockAndReset</code> scope.</p>
+</blockquote>
+<p>原因出在继承的类<code>RawModule</code>，不提供隐式时钟和复位的功能，改用<code>Module</code>，问题解决。还是要先好好学语法。</p>
 
                 
             </div>
@@ -593,7 +559,7 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://gentlebreezeblow.github.io/2022/01/11/chisel-01/">https://gentlebreezeblow.github.io/2022/01/11/chisel-01/</a>
+                    <a href="https://gentlebreezeblow.github.io/2022/01/15/Chisel3%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">https://gentlebreezeblow.github.io/2022/01/15/Chisel3%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -806,9 +772,10 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2022/01/15/Chisel3%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">
                     <div class="card-image">
@@ -826,9 +793,9 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2022-01-15
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-15
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -837,6 +804,7 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -855,13 +823,13 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/01/07/scala-01/">
+                <a href="/2022/01/11/chisel-01/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Scala学习">
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="chisel_01">
                         
-                        <span class="card-title">Scala学习</span>
+                        <span class="card-title">chisel_01</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -872,7 +840,7 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-07
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-11
                             </span>
                         <span class="publish-author">
                             
@@ -885,8 +853,8 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Scala/">
-                        <span class="chip bg-color">Scala</span>
+                    <a href="/tags/Chisel/">
+                        <span class="chip bg-color">Chisel</span>
                     </a>
                     
                 </div>
