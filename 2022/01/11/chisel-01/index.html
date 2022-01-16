@@ -479,38 +479,120 @@ Chipel、Chijel和Ch">
 <p>它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。</p>
 <p>它具有强大的功能表达和传递方式。</p>
 <p>Chipel、Chijel和Chicel的效果不如凿子好。</p>
-<p>Chisel模块声明时不包括Clock和Reset，这些信号是隐式生成的，在大部分设计中处理这些底层细节是不方便的，Chisel提供的寄存器如果需要，会自动连接Clock和Reset。但目前只能生成<strong>同步复位</strong>的电路。</p>
-<h2 id="基本组成部分"><a href="#基本组成部分" class="headerlink" title="基本组成部分"></a>基本组成部分</h2><h3 id="信号类型和常量"><a href="#信号类型和常量" class="headerlink" title="信号类型和常量"></a>信号类型和常量</h3><p>Chisel提供了三种数据类型用来描述型号，组合逻辑，和寄存器：Bits， UInt和SInt。 UInt和SInt是Bits的拓展，并且所有的三种类型代表bits的矢量。UInt表示这个bits的矢量是一个无符号的整型，SInt表示一个有符号的整型。以下是不同类型的定义：</p>
+<p>Constructing Hardware In a Scala Embedded Language</p>
+<p>Chisel模块声明时不包括Clock和Reset，这些信号是隐式生成的，在大部分设计中处理这些底层细节是不方便的，Chisel提供的寄存器如果需要，会自动连接Clock和Reset。Chisel 3.2.0开始，已经支持异步复位。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。因此每个Chisel文件都需要声明<code>import chisel3._</code>，对于某些高级语法，还需要导入<code>import chisel3.util._</code>、<code>import chisel3.experimental._</code>等。</p>
+<p>区分<strong>哪些代码是Scala，哪些是Chisel</strong>很重要。</p>
+<p>Chisel不支持四态逻辑的x和z，只支持0和1。如果确实需要，可以通过黑盒语法与外部的Verilog代码互动，也可以在下游工具链里添加四态逻辑。</p>
+<p>Chisel会对未被驱动的输出型端口和线网进行检测，如果存在，会进行报错。报错选项可以关闭和打开，取决于读者对设计模型的需求。推荐把该选项打开，尽量不要残留无用的声明。</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Chisel自定义的数据类型不同于Scala的类型，构建硬件电路需要用Chisel自定义数据类型。</p>
+<p><img src="D:\清风\Study\HexoData\type_hierarchy.svg" alt="Chisel基本数据类型"></p>
+<p>Chisel提供了三种数据类型用来描述信号(signals)，组合逻辑(combinational logic)，和寄存器(registers)：<code>Bits</code>，<code>UInt</code>和<code>SInt</code>。<code>UInt</code>和<code>SInt</code>是<code>Bits</code>的拓展，并且所有的三种类型代表bits的矢量。<code>UInt</code>表示这个bits的矢量是一个无符号的整型，<code>SInt</code>表示一个有符号的整型。以下是不同类型的定义：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 8位Bits</span>
 UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 8位无符号整型</span>
 SInt<span class="token punctuation">(</span><span class="token number">10.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 10位有符号整型</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<p>UInt、SInt、Bits的矢量宽度被Chisel的Width类型定义：</p>
+<p><code>UInt</code>、<code>SInt</code>、<code>Bits</code>的矢量宽度被Chisel的<code>Width</code>类型定义：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 宽度为1的Bits类型</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>字面量可以通过Scala定义并转为Chisel类型：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
-<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span>
-<span class="token string">"b0101"</span><span class="token punctuation">.</span>U     		<span class="token comment">// 字面值为“5”的UInt对象</span>
-<span class="token boolean">true</span><span class="token punctuation">.</span>B            	<span class="token comment">// 字面值为“true”的Bool对象 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>字面量同样可以使用Width类型来定义宽度：</p>
+<p>其实这也是Scala中的隐式转换，Chisel定义了一系列隐式类用于类型转换：<code>fromBigIntToLiteral</code>、<code>fromtIntToLiteral</code>、<code>fromtLongToLiteral</code>、<code>fromStringToLiteral</code>、<code>fromBooleanToLiteral</code>等，具体请看API：<a target="_blank" rel="noopener" href="https://www.chisel-lang.org/api/3.5.0/chisel3/index.html">Chisel_API</a>。</p>
+<p>以隐式类<code>fromtIntToLiteral</code>为例，存在一个同名的隐式转换，把相应的Scala的<code>Int</code>对象转换成一个<code>fromtIntToLiteral</code>的对象。</p>
+<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220116162436417.png" alt="fromIntToLiteral定义方法" style="zoom:90%;" />
+
+<p>而<code>fromtIntToLiteral</code>类有两个方法<code>U</code>和<code>S</code>，分别构造一个等值的<code>UInt</code>对象和<code>SInt</code>对象。再加上Scala的基本值类都是用字面量构造对象，所以要表示一个<code>UInt</code>对象，可以写成<code>1.U</code>的格式，这样编译器会插入隐式转换，变成<code>fromtIntToLiteral(1).U</code>，进而构造出字面值为<code>1</code>的<code>UInt</code>对象。同理，也可以构造<code>SInt</code>。还有相同行为的方法<code>asUInt</code>和<code>asSInt</code>目前已被官方不推荐，未来很有可能会删除。</p>
+<p>字面量同样可以使用<code>Width</code>类型来定义宽度，默认会按字面值取最小宽度：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">8.</span>U<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>			<span class="token comment">// 一个4位的常量8</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>因此要注意<code>8.U</code>和<code>4.W</code>这种表达方式，可以认为它是一个整型常量附带一个类型，类似于Scala中的<code>8L</code>，代表长整型。这样就可能会导致犯错，例如<code>1.U(32)</code>不会定义一个32位宽的代表1的常量，相反，表达式<code>(32)</code>会被翻译为从32位抓取数值，结果是一个常量0。</p>
-<p>对于其他进制的字面量，可以使用字符串来定义，十六进制是h，八进制是o，二进制是b，下划线是被忽略的。以下例子都是常量255的定义，并且省略位宽由Chisel自动推断。</p>
+<p>对于其他进制的字面量，可以使用字符串来定义，十六进制是h，八进制是o，二进制是b，字面量可以用下划线间隔，下划线是被忽略的。以下例子都是常量255的定义，并且省略位宽，由Chisel自动推断。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token string">"hff"</span><span class="token punctuation">.</span>U
 <span class="token string">"o377"</span><span class="token punctuation">.</span>U
 <span class="token string">"b1111_1111"</span><span class="token punctuation">.</span>U<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-<p>Chisel定义了Bool类型来表示逻辑true或false，通过转换Scala中的Boolean到Chisel自定义的Bool类型：</p>
+<p>Chisel定义了<code>Bool</code>类型来表示逻辑true或false，<code>Bool</code>类型通过<code>Boolean</code>类型的字面量——true和false——来构造<code>fromBooleanToLiteral</code>类型的对象，然后调用名为<code>B</code>的方法进一步构造<code>Bool</code>类型的对象：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token boolean">true</span><span class="token punctuation">.</span>B
 <span class="token boolean">false</span><span class="token punctuation">.</span>B<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
+<p>对于<code>UInt</code>，可以构成任意位宽的线网或寄存器。对于<code>SInt</code>，在Chisel里会按补码解读，转换成Verilog后会使用系统函数<code>$signed</code>，这是可综合的。对于<code>Bool</code>，转换成Verilog后就是1bit的线网或寄存器。</p>
+<p>有字面量的数据类型(如<code>1.U(32.W)</code>)用于赋值、初始化寄存器等操作，而无字面量的数据类型(<code>UInt(32.W)</code>)则多用于声明端口、构造向量等。</p>
+<p>现在再回到Chisel数据类型的结构图，这些数据类型都继承自抽象基类<code>Data</code>，主要包括两大子类：<strong>聚合类</strong><code>Aggregate</code>和<strong>元素类</strong><code>Element</code>。</p>
+<p><strong>聚合类</strong>：常用子类是向量类<code>Vec</code>和包裹类<code>Bundle</code>。</p>
+<ul>
+<li><code>Vec</code>类用于包含相同的元素，元素类型可以是任意的Data子类。因为<code>Vec</code>混入了特质<code>IndexedSeq[T]</code>，所以向量的元素能从<strong>下标0</strong>开始索引访问。</li>
+<li><code>Bundle</code>类用于被自定义的类继承，这样自定义的类就能包含任意Data的子类对象，常用于协助构造模块的端口，故而衍生出了一些预定义的端口子类。</li>
+</ul>
+<p><strong>元素类</strong>：衍生出了<code>Analog</code>、<code>Bits</code>和<code>Clock</code>三个子类，单例对象<code>DontCare</code>和特质<code>Reset</code>。</p>
+<ul>
+<li><code>Analog</code>用于在黑盒中模拟inout端口，目前在实际Chisel里并无其他用途。</li>
+<li><code>Bits</code>类的两个子类<code>SInt</code>和<code>UInt</code>是最常用的两个数据类型，它们是用补码表示的有符号整数和无符号整数。不仅用来协助定义端口位宽，还用来进行赋值。</li>
+<li><code>FixedPoint</code>类提供的API带有试验性质，而且将来可能会发生改变，所以不常用。</li>
+<li><code>Bool</code>类是Chisel自己的布尔类型，<strong>区别于Scala的Boolean</strong>。<code>Bool</code>类是<code>UInt</code>类的子类，因为它可以看成是1bit的<code>UInt</code>，而且它被混入<code>Reset</code>特质，因为复位信号都是用<code>Bool</code>类型的线网或寄存器使能的。此外，<code>Bits</code>类混入了特质<code>ToBoolable</code>，也就是说<code>FixedPoint</code>、<code>SInt</code>和<code>UInt</code>都能转换成多bit的<code>Bool</code>类型。</li>
+<li><code>Clock</code>类表示时钟，<strong>Chisel里的时钟是专门的一个类型</strong>，并不像Verilog里那样是1bit的线网。复位特质<code>Reset</code>也是如此。</li>
+<li>单例对象<code>DontCare</code>用于赋值给未驱动的端口或线网，防止编译器报错。</li>
+</ul>
+<p>Chisel常用的类型就五种：<code>UInt</code>、<code>SInt</code>、<code>Bool</code>、<code>Bundle</code>和<code>Vec[T]</code>。</p>
+<h3 id="向量和混合向量"><a href="#向量和混合向量" class="headerlink" title="向量和混合向量"></a>向量和混合向量</h3><p><code>Vec</code>是Chisel专属的集合类型，T必须是Data的子类，而且每个元素的类型、位宽必须一致。使用向量或其他Scala的集合时要仔细考虑，一般只在定义寄存器或端口时用来表示硬件集合。</p>
+<p>API信息：</p>
+<blockquote>
+<p>def apply[T &lt;: Data](n: Int, gen: T)</p>
+<p>(<em>implicit</em> sourceInfo: SourceInfo, compileOptions: CompileOptions): Vec[T]</p>
+<p>Creates a new Vec with <code>n</code> entries of the specified data type.</p>
+</blockquote>
+<p>由信息可知，向量定义了一个apply工厂方法，接收两个参数，第一个表示元素个数，第二个是元素。向量<strong>下标从0开始</strong>。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Vec<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span>UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<hr>
+<p><code>VecInit</code>通过接收一个<code>Seq</code>(Seq是包括Seq、Array、List、Tuple等集合)作为参数来构造向量，或是多个重复参数。常把有字面量的数据作为参数，用于初始化寄存器组、ROM、RAM等，或用来构造多个模块。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">VecInit<span class="token punctuation">(</span><span class="token number">1.</span>U<span class="token punctuation">,</span> <span class="token number">2.</span>U<span class="token punctuation">,</span> <span class="token number">3.</span>U<span class="token punctuation">,</span> <span class="token number">4.</span>U<span class="token punctuation">)</span>				<span class="token comment">//重复参数</span>
+VecInit<span class="token punctuation">(</span>Seq<span class="token punctuation">.</span>fill<span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>			<span class="token comment">//序列</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<hr>
+<p><code>MixedVec</code>是混合向量，与普通向量<code>Vec</code>类似，但其包含的元素可以不全都一样，比如位宽不一样。与向量类似，也有一个名为<code>MixedVecInit</code>的类型可以接收重复参数或序列。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">MixedVec<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">16.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>				<span class="token comment">//重复参数</span>
+MixedVec<span class="token punctuation">(</span>Array<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">16.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>		<span class="token comment">//序列</span>
+MixedVec<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span> to <span class="token number">10</span><span class="token punctuation">)</span> map <span class="token punctuation">(</span>i <span class="token keyword">=></span> UInt<span class="token punctuation">(</span>i<span class="token punctuation">.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>				<span class="token comment">//序列</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>上例最后一行代码会生成十个<code>UInt</code>类型的宽度<code>Width</code>从1依次增加至10的集合，如果是生成寄存器，那么会生成<code>reg_0</code>、<code>[1:0] reg_1</code>、……、<code>[9:0] reg_9</code>。</p>
+<p>Scala中的map、flatMap、zip、foreach、filter、exists、contains等方法虽然是软件层面，但也可以用于简化硬件逻辑的编写。</p>
+<blockquote>
+<p>Vec和MixedVec定义的时候，最好不要直接给确切的值，只需要给出Chisel type，之后再给元素单独赋值即可，如上面的<code>UInt(32.W)</code>即可，否则会报错。原因是：Vec接收的是数据类型，而带字面量的数据如<code>1.U</code>会被认为是硬件类型，就会报错。</p>
+<p>同样，VecInit和MixedVecInit必须给出确切的初始化的值，不能只给Chisel type。原因是：VecInit接收的是硬件类型，而Chisel type如<code>UInt(32.W)</code>是数据类型，如果传入就会报错。</p>
+</blockquote>
+<p>索引时需要多个括号：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> myVec <span class="token operator">=</span> Reg<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+myVec<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token comment">//索引vec第一个元素的第6个bit</span>
+
+myVec<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token comment">//索引vec第一个元素的低4位</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="包裹Bundle"><a href="#包裹Bundle" class="headerlink" title="包裹Bundle"></a>包裹Bundle</h3><p>抽象类<code>Bundle</code>很像C语言中的结构体，用户可以编写一个自定义类来继承自它，然后在自定义的类里包含其它各种Data类型的字段。它可以协助构建线网或寄存器。但最常见的用途是用于构建一个模块的端口列表或一部分端口：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> MyModule <span class="token keyword">extends</span> Module <span class="token punctuation">&#123;</span>
+   <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+       <span class="token keyword">val</span> in <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+       <span class="token keyword">val</span> out <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>Bundle</code>可以和<code>UInt</code>相互转换，<code>Bundle</code>类有一个方法<code>asUInt</code>，可以把所含的字段拼接成一个<code>UInt</code>数据，并且前面的字段在高位。<code>asTypeOf</code>方法将<code>UInt</code>转换成<code>Bundle</code>类型。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> MyBundle <span class="token keyword">extends</span> Bundle <span class="token punctuation">&#123;</span>
+   <span class="token keyword">val</span> foo <span class="token operator">=</span> UInt<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>  <span class="token comment">// 高位</span>
+   <span class="token keyword">val</span> bar <span class="token operator">=</span> UInt<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>  <span class="token comment">// 低位</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">val</span> bundle <span class="token operator">=</span> Wire<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>
+bundle<span class="token punctuation">.</span>foo <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">0xc</span><span class="token punctuation">.</span>U
+bundle<span class="token punctuation">.</span>bar <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">0x3</span><span class="token punctuation">.</span>U
+<span class="token keyword">val</span> uint <span class="token operator">=</span> bundle<span class="token punctuation">.</span>asUInt  <span class="token comment">// 12*16 + 3 = 195</span>
+
+<span class="token keyword">val</span> uintTwo <span class="token operator">=</span> <span class="token number">0xb4</span><span class="token punctuation">.</span>U
+<span class="token keyword">val</span> bundleTwo <span class="token operator">=</span> uintTwo<span class="token punctuation">.</span>asTypeOf<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>  <span class="token comment">// foo = 11, bar = 4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
-<p>Bundle表示不同类型的组信号，Vec表示一个可索引的相同类型的信号。</p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>PeekPokeTester Chisel提供的testbench。</p>
+
+<h2 id="内建操作符"><a href="#内建操作符" class="headerlink" title="内建操作符"></a>内建操作符</h2><h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>PeekPokeTester Chisel提供的testbench。</p>
 <h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
 <p>以与门为例，src/main/scala创建AND.scala：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// AND.scala</span>
@@ -548,27 +630,10 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
      <span class="token keyword">assign</span> io_c <span class="token operator">=</span> io_a <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span>
 <span class="token keyword">endmodule</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。因此每个Chisel文件都需要声明<code>import chisel3._</code>，对于某些高级语法，还需要导入<code>import chisel3.util._</code>、<code>import chisel3.experimental._</code>等。</p>
-<p>Chisel不支持四态逻辑的x和z，只支持0和1。如果确实需要，可以通过黑盒语法与外部的Verilog代码互动，也可以在下游工具链里添加四态逻辑。</p>
-<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><h3 id="Chisel自定义数据类型"><a href="#Chisel自定义数据类型" class="headerlink" title="Chisel自定义数据类型"></a>Chisel自定义数据类型</h3><p><img src="https://img-blog.csdnimg.cn/20190218003949321.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MjkxNTA1,size_16,color_FFFFFF,t_70" alt="Chisel数据类型"></p>
-<p>Chisel常用的类型就五种：UInt、SInt、Bool、Bundle和Vec[T]。图中绿色方块是class，红色是object，蓝色是trait，箭头指向的是超类和混入的特质。</p>
-<p>Chisel定义了自己的一套数据类型，构建硬件电路要用Chisel的数据类型，在使用时不要与Scala数据类型混淆。所有数据类型都继承自抽象基类Data，它混入了两个特质HasId和NamedComponent。在实际硬件构成里，应该关注Data类的两大子类：聚合类Aggregate和元素类Element。</p>
-<p>聚合类Aggregate的常用子类是向量类Vec[T]和包裹类Bundle。Vec[T]类用于包含相同的元素，元素类型T可以是任意的Data子类。因为Vec[T]混入了特质IndexedSeq[T]，所以向量的元素能从下标0开始索引访问。Bundle类用于被自定义的类继承，这样自定义的类就能包含任意Data的子类对象，常用于协助构造模块的端口，故而衍生出了一些预定义的端口子类。混合向量类MixedVec[T]是Chisel3.2以上版本添加的语法，它与Vec[T]的不同在于可以包含不同类型的元素。</p>
-<p>元素类Element类衍生出了Analog、Bits和Clock三个子类，单例对象DontCare和特质Reset。Analog用于在黑盒中模拟inout端口，目前在实际Chisel里并无其他用途。Bits类的两个子类<strong>SInt</strong>和<strong>UInt</strong>是最常用的两个数据类型，它们是用补码表示的有符号整数和无符号整数。不仅用来协助定义端口位宽，还用来进行赋值。FixedPoint类提供的API带有试验性质，而且将来可能会发生改变，所以不常用。<strong>Bool</strong>类是Chisel自己的布尔类型，<strong>区别于Scala的Boolean</strong>。Bool类是UInt类的子类，因为它可以看成是1bit的UInt，而且它被混入Reset特质，因为复位信号都是用Bool类型的线网或寄存器使能的。此外，Bits类混入了特质ToBoolable，也就是说FixedPoint、SInt和UInt都能转换成多bit的Bool类型。Clock类表示时钟，<strong>Chisel里的时钟和复位是专门的一个类型</strong>，并不像Verilog里那样是1bit的线网。复位类型Reset也是如此。单例对象DontCare用于赋值给未驱动的端口或线网，防止编译器报错。</p>
-<h3 id="数据字面量"><a href="#数据字面量" class="headerlink" title="数据字面量"></a>数据字面量</h3><p>能够表示具体值的数据类型为UInt、SInt和Bool。对于UInt，可以构成任意位宽的线网或寄存器。对于SInt，在Chisel里会按补码解读，转换成Verilog后会使用系统函数$signed，这是可综合的。对于Bool，转换成Verilog后就是1bit的线网或寄存器。</p>
-<p><strong>Chisel本质依旧是Scala语言</strong>，所以我们输入的数据字面量最初依旧是Scala数据类型的数据字面量，要转为Chisel所用数据类型，要写成类似”1.U”的格式。这是因为Chisel定义了一系列的隐式类：fromBigIntToLiteral、fromtIntToLiteral、fromtLongToLiteral、fromStringToLiteral、fromBooleanToLiteral、fromIntToWidth。</p>
-<p>以隐式类fromtIntToLiteral为例，存在一个同名的隐式转换，把相应的Scala的Int对象转换成一个fromtIntToLiteral的对象。而fromtIntToLiteral类有两个方法U和S，分别构造一个等值的UInt对象和SInt对象。再加上Scala的基本值类都是用字面量构造对象，所以要表示一个UInt对象，可以写成“1.U”的格式，这样编译器会插入隐式转换，变成“fromtIntToLiteral(1).U”，进而构造出字面值为“1”的UInt对象。同理，也可以构造SInt。还有相同行为的方法asUInt和asSInt。</p>
-<p>从几个隐式类的名字就可以看出，可以通过BigInt、Int、Long和String四种类型的Scala字面量来构造UInt和SInt。对于字符串类型的字面量，Chisel编译器默认也是十进制的，但是可以加上首字母“h”、“o”、“b”来分别表示十六进制、八进制和二进制。此外，字符串字面量可以用下划线间隔。</p>
-<p>可以通过Boolean类型的字面量——true和false——来构造fromBooleanToLiteral类型的对象，然后调用名为B和asBool的方法进一步构造Bool类型的对象。例如：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
-
-<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span>
-
-<span class="token string">"b0101"</span><span class="token punctuation">.</span>U     		<span class="token comment">// 字面值为“5”的UInt对象</span>
-
-<span class="token boolean">true</span><span class="token punctuation">.</span>B            	<span class="token comment">// 字面值为“true”的Bool对象 </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
+<h2 id="隐式时钟和复位"><a href="#隐式时钟和复位" class="headerlink" title="隐式时钟和复位"></a>隐式时钟和复位</h2><h2 id="复位"><a href="#复位" class="headerlink" title="复位"></a>复位</h2><h2 id="模块例化"><a href="#模块例化" class="headerlink" title="模块例化"></a>模块例化</h2><h2 id="IO和模块"><a href="#IO和模块" class="headerlink" title="IO和模块"></a>IO和模块</h2><p>Module RawModule</p>
+<h2 id="硬件模块和硬件类型"><a href="#硬件模块和硬件类型" class="headerlink" title="硬件模块和硬件类型"></a>硬件模块和硬件类型</h2>
                 
             </div>
             <hr/>

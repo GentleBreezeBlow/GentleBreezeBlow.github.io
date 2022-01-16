@@ -5,8 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="Chisel3问题记录, Hexo">
-    <meta name="description" content="Chisel3 学习过程问题记录2022-01-15问题描述初学Chisel，学到Chisel可以隐式声明时钟和复位，而且默认复位是同步复位、高电平复位。于是就想着按照网上的例子动手操作，使用教程的代码，生成Verilog失败，错误如下：
-">
+    <meta name="description" content="Chisel3 学习过程问题记录2022-01-15问题描述初学Chisel，学到Chisel可以隐式声明时钟和复位，而且默认复位是同步复位、高电平复位（从Chisel3.2.0开始，Chisel支持异步复位）。于是就想着按照网上的例子动手">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -471,7 +470,7 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Chisel3-学习过程问题记录"><a href="#Chisel3-学习过程问题记录" class="headerlink" title="Chisel3 学习过程问题记录"></a>Chisel3 学习过程问题记录</h1><h2 id="2022-01-15"><a href="#2022-01-15" class="headerlink" title="2022-01-15"></a>2022-01-15</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>初学Chisel，学到Chisel可以隐式声明时钟和复位，而且默认复位是同步复位、高电平复位。于是就想着按照网上的例子动手操作，使用教程的代码，生成Verilog失败，错误如下：</p>
+                <h1 id="Chisel3-学习过程问题记录"><a href="#Chisel3-学习过程问题记录" class="headerlink" title="Chisel3 学习过程问题记录"></a>Chisel3 学习过程问题记录</h1><h2 id="2022-01-15"><a href="#2022-01-15" class="headerlink" title="2022-01-15"></a>2022-01-15</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>初学Chisel，学到Chisel可以隐式声明时钟和复位，而且默认复位是同步复位、高电平复位（从Chisel3.2.0开始，Chisel支持异步复位）。于是就想着按照网上的例子动手操作，使用教程的代码，生成Verilog失败，错误如下：</p>
 <blockquote>
 <p>Elaborating design…<br>[error]     at … ()<br>[error]     at test.AND.$anonfun$reg$2(AND.scala:15)<br>[error]     at chisel3.internal.prefix$.apply(prefix.scala:49)<br>[error]     at test.AND.$anonfun$reg$1(AND.scala:15)<br>[error]     at chisel3.internal.plugin.package$.autoNameRecursively(package.scala:52)<br>[error]     at test.AND.<init>(AND.scala:15)<br>[error]     at test.testMain$.$anonfun$new$1(ANDtest.scala:7)<br>[error]     at … ()<br>[error]     at … (Stack trace trimmed to user code only. Rerun with –full-stacktrace to see the full stack trace)</p>
 </blockquote>
