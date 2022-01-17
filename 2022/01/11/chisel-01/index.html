@@ -928,7 +928,7 @@ io<span class="token punctuation">.</span>c <span class="token operator">:</span
 <h2 id="寄存器Reg"><a href="#寄存器Reg" class="headerlink" title="寄存器Reg"></a>寄存器Reg</h2><p>类似于Verilog中时序逻辑中用的reg。</p>
 <p>主要有五种内建的寄存器类型，以下例子均继承了<code>Module</code>类且混入了特质<code>RequireAsyncReset</code>，复位均为异步复位：</p>
 <hr>
-<p><strong>Reg</strong>：普通的寄存器，工厂方法<code>Reg[T &lt;: Data](t: T)</code>，传入数据类型。</p>
+<p><strong>Reg</strong>：普通的寄存器，apply方法<code>Reg[T &lt;: Data](t: T)</code>，传入数据类型。</p>
 <p>可以进行条件赋值，也可以进行无条件赋值，<strong>默认没有复位信号</strong>；参数<code>t</code>的意思是提供一个数据类型模板，也即指定数据的类型，不用给确切的值。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg0 <span class="token operator">=</span> Reg<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">2.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
 reg0 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -940,7 +940,7 @@ reg0 <span class="token operator">:</span><span class="token operator">=</span> 
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
-<p><strong>RegInit</strong>：带复位的寄存器，工厂方法<code>RegInit[T &lt;: Data](init: T)</code>或<code>RegInit[T &lt;: Data](t: T, init: T)</code>，传入硬件类型。</p>
+<p><strong>RegInit</strong>：带复位的寄存器，apply方法<code>RegInit[T &lt;: Data](init: T)</code>或<code>RegInit[T &lt;: Data](t: T, init: T)</code>，传入硬件类型。</p>
 <p>可以进行条件赋值，也可以无条件赋值；<strong>默认有复位信号</strong>；参数<code>t</code>的意思是提供一个数据类型模板，也即指定数据的类型，不用给确切的值。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg1 <span class="token operator">=</span> RegInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">2.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
 reg0 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
@@ -956,7 +956,7 @@ reg0 <span class="token operator">:</span><span class="token operator">=</span> 
 <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <hr>
-<p><strong>RegNext</strong>：跟随寄存器，工厂方法<code>RegNext[T &lt;: Data](next: T)</code>，传入硬件类型。在每个时钟上升沿，它都会采样一次传入的参数，并且没有复位信号。它的另一个版本的apply工厂方法是<code>RegNext[T &lt;: Data](next: T, init: T)</code>，也就是由复位信号控制，当复位信号有效时，复位到指定值，否则就跟随。</p>
+<p><strong>RegNext</strong>：跟随寄存器，apply方法<code>RegNext[T &lt;: Data](next: T)</code>，传入硬件类型。在每个时钟上升沿，它都会采样一次传入的参数，并且没有复位信号。它的另一个版本的apply工厂方法是<code>RegNext[T &lt;: Data](next: T, init: T)</code>，也就是由复位信号控制，当复位信号有效时，复位到指定值，否则就跟随。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg2 <span class="token operator">=</span> RegNext<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>生成的Verilog为：</p>
@@ -980,7 +980,7 @@ reg0 <span class="token operator">:</span><span class="token operator">=</span> 
 
 <p>可以看到此时和<code>RegInit</code>作用是一致的。</p>
 <hr>
-<p><strong>RegEnable</strong>：util包里的带使能端的寄存器，工厂方法<code>RegEnable[T &lt;: Data](next: T, init: T, enable: Bool)</code>，如果不需要复位信号，则第二个参数可以省略给出。传入硬件类型。</p>
+<p><strong>RegEnable</strong>：util包里的带使能端的寄存器，apply方法<code>RegEnable[T &lt;: Data](next: T, init: T, enable: Bool)</code>，如果不需要复位信号，则第二个参数可以省略给出。传入硬件类型。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg3 <span class="token operator">=</span> RegEnable<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in<span class="token punctuation">,</span>io<span class="token punctuation">.</span>en<span class="token punctuation">)</span>	<span class="token comment">//in和en是Input</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>生成Verilog：</p>
@@ -1009,7 +1009,7 @@ reg0 <span class="token operator">:</span><span class="token operator">=</span> 
 
 <p>可以看出，<strong>除了Reg，其余寄存器传入的参数都必须是硬件类型，而Reg传入的参数是数据类型。</strong></p>
 <hr>
-<p><strong>寄存器组</strong>：上述构造寄存器的工厂方法，它们的参数可以是任何Data的子类型。如果把子类型Vec[T]或VecInit[T]作为参数传递进去，就会生成多个位宽相同、行为相同、名字前缀相同的寄存器。同样，寄存器组在Chisel代码里可以通过下标索引。例如：</p>
+<p><strong>寄存器组</strong>：上述构造寄存器的apply方法，它们的参数可以是任何Data的子类型。如果把子类型Vec[T]或VecInit[T]作为参数传递进去，就会生成多个位宽相同、行为相同、名字前缀相同的寄存器。同样，寄存器组在Chisel代码里可以通过下标索引。例如：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// reg2.scala</span>
 <span class="token keyword">package</span> <span class="token namespace">test</span>
  

@@ -532,20 +532,20 @@ greet<span class="token operator">:</span> <span class="token punctuation">(</sp
 
 <p>解释器输出返回<code>greet: ()Unit</code>。greet为函数名，空白的括号说明函数不带参数。Unit是函数的结果类型，指的是函数没有有效的返回值。且Unit是自动推断的，但如果函数显示声明返回值类型为Unit，那么即使函数体最后有一个可返回具体值的表达式，也不会返回结果。Scala的Unit类型比较类似Java的void类型，而且实际上Java里返回void的方法都会被映射为返回Unit的Scala方法。因此结果类型为Unit的方法，并非是为了得到返回值，而是为了其他副作用(side effect)。</p>
 <blockquote>
-<p>函数定义中有一个等号，这使得它看起来类似数学里的函数“f(x) = …”。当函数的返回值类型没有显式声明时，那么这个等号可以省略，但是返回值类型一定会被推断成Unit类型，不管有没有值返回，而且函数体必须有花括号。当函数的返回值类型显式声明时，则无论如何都不能省略等号。建议写代码时不要省略等号，避免产生不必要的错误，返回值类型最好也显式声明。</p>
+<p>函数副作用是指函数在正常工作任务之外对外部环境所施加的影响。例如修改了全局变量的值。</p>
+<p>函数的副作用为如果当前函数没有设置参数或设置内部声明变量的var时，当前函数的函数变量就会调用函数的父级作用域的变量，对父级作用域的变量值造成全局污染。</p>
+<p>方法(类中定义的函数)没有副作用是函数式风格编程的重要理念，计算并返回值应该是方法唯一的目的。这样做的好处之一是方法之间耦合度降低，因此更加可靠和易于重用；好处之二(在静态类型语言里)是方法的参数和返回值都经过类型检查器的检查，因此可以比较容易地根据类型错误推断其中隐含地逻辑错误。而这种函数式编程思想在面向对象编程中地应用就意味着对象的不可改变性。</p>
 </blockquote>
 <p>函数体内部还可以嵌套函数，嵌套函数作用域是局部的，只能由函数体内调用，外部无法访问。</p>
+<blockquote>
+<p>函数定义中有一个等号，这使得它看起来类似数学里的函数“f(x) = …”。当函数的返回值类型没有显式声明时，那么这个等号可以省略，但是返回值类型一定会被推断成Unit类型，不管有没有值返回，而且函数体必须有花括号。当函数的返回值类型显式声明时，则无论如何都不能省略等号。建议写代码时不要省略等号，避免产生不必要的错误，返回值类型最好也显式声明。</p>
+</blockquote>
 <h3 id="函数字面量"><a href="#函数字面量" class="headerlink" title="函数字面量"></a>函数字面量</h3><p>Scala是<strong>函数式编程语言</strong>。</p>
 <blockquote>
 <p>函数式编程有两种指导理念，第一种理念是函数是头等值(first-class values)。在函数式语言中，函数也是值，与整数或字符串处于同一地位。函数可以被当作参数传递给其他函数，可以当作结果从函数中返回或保存在变量里。可以在函数里定义其他函数，就好像在函数里定义整数一样。还可以定义匿名函数，并随意地插入到代码的任何地方，就好像使用整数字面量一样。</p>
 <p>第二种理念是程序的操作应该把输入值映射为输出值而不是就地修改数据。另一种解释是，方法不应有任何副作用(side effect)。方法与其所在环境交流的唯一方式应该是获得参数和返回结果。</p>
 </blockquote>
 <p>Scala不强迫使用函数式编程风格，必要情况下，可以写成指令式，用可变数据或有副作用的方法调用。</p>
-<blockquote>
-<p>函数副作用是指函数在正常工作任务之外对外部环境所施加的影响。例如修改了全局变量的值。</p>
-<p>函数的副作用为如果当前函数没有设置参数或设置内部声明变量的var时，当前函数的函数变量就会调用函数的父级作用域的变量，对父级作用域的变量值造成全局污染。</p>
-<p>方法(类中定义的函数)没有副作用是函数式风格编程的重要理念，计算并返回值应该是方法唯一的目的。这样做的好处之一是方法之间耦合度降低，因此更加可靠和易于重用；好处之二(在静态类型语言里)是方法的参数和返回值都经过类型检查器的检查，因此可以比较容易地根据类型错误推断其中隐含地逻辑错误。而这种函数式编程思想在面向对象编程中地应用就意味着对象的不可改变性。</p>
-</blockquote>
 <p>Scala中定义函数字面量形式为：</p>
 <pre class="line-numbers language-none"><code class="language-none">(参数1: 参数1类型, 参数2: 参数2类型, ...) &#x3D;&gt; &#123; 函数体 &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
@@ -653,10 +653,12 @@ SS						<span class="token comment">// 打印结果</span><span aria-hidden="tru
 <p>Scala追求<strong>纯粹的面向对象</strong>。在Java中，类内部定义的静态变量不属于任何一个用new实例化的对象，而是共有部分。但Scala把类内部的静态变量移除，集中定义在伴生对象里。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">object</span> Test<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
+<p>既然单例对象和new实例的对象一样，那么类内可以定义的代码，单例对象同样可以拥有。例如，单例对象里面可以定义字段和方法。Scala允许在类里定义别的类和单例对象，所以单例对象也可以包含别的类和单例对象的定义。因此，单例对象除了用作伴生对象，通常也可以用于打包某方面功能的函数系列成为一个工具集，或者包含主函数成为程序的入口。</p>
+<p>“object”后面定义的单例对象名可以认为是这个单例对象的名称标签，因此可以通过句点符号访问单例对象的成员——“单例对象名.成员”，也可以赋给一个变量——“val 变量 = 单例对象名”，就像用new实例的对象那样。</p>
 <p>定义单列对象并没有定义类型(Scala的抽象层次)。如例子中只有Test对象的定义，就不能建立Test类型的变量。或者可以认为，Test类型是由单列对象的伴生类定义的。然而，单列对象扩展了父类并可以混入特质。因此，可以使用类型调用单列对象的方法，或者用类型的实例变量指代单列对象，并把它传递给需要类型参数的方法。如：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> Test2
 <span class="token keyword">object</span> Test2
-<span class="token keyword">val</span> x<span class="token operator">:</span> Test2 <span class="token operator">=</span> Test2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">val</span> x <span class="token operator">=</span> Test2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
 <p>类和单列对象间的差别是，单列对象不带参数，而类可以。因为单列对象不是用new关键字实例化的，所以没机会传递给它实例化参数。每个单列对象都被实现为虚构类(synthetic class)的实例，并指向静态变量。单列对象在第一次被访问时才会被初始化。</p>
 <p>不与伴生类共享名称的单列对象称为独立对象(standalone object)，通常作为打包某方面功能的函数集，或者包含主函数成为程序的入口。</p>
@@ -747,6 +749,20 @@ mer<span class="token punctuation">.</span>state				<span class="token comment">
 
 <p>如果超类成员在开头用关键字 <code>final</code>修饰，那么子类就只能继承，而不能重写。<code>final</code>也可以用于修饰 <code>class</code>，那么这个类就禁止被其他类继承。</p>
 <p>Scala允许超类的无参方法被子类重写为字段，但是字段不能反过来被重写为无参方法，而且方法的返回类型必须和字段的类型一致。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> A<span class="token punctuation">&#123;</span>
+    <span class="token keyword">def</span> display<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"A"</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">class</span> B <span class="token keyword">extends</span> A<span class="token punctuation">&#123;</span>
+    <span class="token keyword">override</span> <span class="token keyword">val</span> display <span class="token operator">=</span> <span class="token string">"B"</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">//C不能被声明成功会报错</span>
+<span class="token comment">//error: stable, immutable value required to override:</span>
+<span class="token comment">//      override val display: String (defined in class B)</span>
+<span class="token keyword">class</span> C <span class="token keyword">extends</span> B<span class="token punctuation">&#123;</span>
+    <span class="token keyword">override</span> <span class="token keyword">def</span> display<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token string">"C"</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <blockquote>
 <p>字段与方法的区别在于：字段一旦被初始化之后，就会被保存在内存中，以后每次调用都只需直接读取内存即可；方法不会占用内存空间，但是每次调用都需要执行一遍程序段，速度比字段要慢。</p>
 </blockquote>
@@ -770,7 +786,7 @@ x<span class="token punctuation">.</span>display				<span class="token comment">
 <span class="token keyword">val</span> x <span class="token operator">=</span> <span class="token keyword">new</span> A
 <span class="token comment">// error: class A is abstract; cannot be instantiated</span>
 
-<span class="token keyword">class</span> B<span class="token punctuation">(</span><span class="token keyword">val</span> b<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span><span class="token keyword">extends</span> A<span class="token punctuation">&#123;</span>
+<span class="token keyword">class</span> B<span class="token punctuation">(</span><span class="token keyword">val</span> b<span class="token operator">:</span><span class="token builtin">Int</span><span class="token punctuation">)</span> <span class="token keyword">extends</span> A<span class="token punctuation">&#123;</span>
     <span class="token keyword">val</span> a <span class="token operator">=</span> b<span class="token operator">*</span><span class="token number">2</span>
 <span class="token punctuation">&#125;</span>
 
@@ -795,7 +811,32 @@ y<span class="token punctuation">.</span>b								<span class="token comment">//
 
 <span class="token keyword">object</span> D <span class="token keyword">extends</span> A <span class="token keyword">with</span> B <span class="token keyword">with</span> C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h3 id="特质层次"><a href="#特质层次" class="headerlink" title="特质层次"></a>特质层次</h3><h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>Scala里常见的集合有：数组(Array)、列表(List)、集(Set)、映射(Map)、序列(Seq)、元组(Tuple)、数组缓冲和列表缓冲。</p>
+<h3 id="特质层次"><a href="#特质层次" class="headerlink" title="特质层次"></a>特质层次</h3><p>特质也可以继承自其他类，或混入任意个特质，这样该特质就是关键字<code>extends</code>引入的那个类/特质的子特质。如果没有继承和混入，那么这个特质就是<code>AnyRef</code>类的子特质。前面讲过<code>AnyRef</code>类是所有非值类和特质的超类。当某个类、单例对象或特质用关键字<code>extends</code>混入一个特质时，会隐式继承自这个特质的超类。也就是说，类/单例对象/特质的超类，都是由“extends”引入的类或特质决定的。</p>
+<p>特质对混入有一个限制条件：那就是要混入该特质的类/单例对象/特质，它的超类必须是待混入特质的超类，或者是待混入特质的超类的子类。因为特质是多重继承的替代品，那就有“继承”的意思。既然是继承，混入特质的类/单例对象/特质的层次，就必须比待混入特质的层次要低。例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> A
+<span class="token keyword">class</span> B <span class="token keyword">extends</span> A
+<span class="token keyword">class</span> C
+<span class="token keyword">trait</span> D <span class="token keyword">extends</span> A
+<span class="token keyword">trait</span> E <span class="token keyword">extends</span> B
+<span class="token keyword">class</span> Test1 <span class="token keyword">extends</span> D
+<span class="token keyword">class</span> Test2 <span class="token keyword">extends</span> A <span class="token keyword">with</span> D
+<span class="token keyword">class</span> Test3 <span class="token keyword">extends</span> B <span class="token keyword">with</span> D
+<span class="token keyword">class</span> Test4 <span class="token keyword">extends</span> C <span class="token keyword">with</span> D
+<span class="token comment">/*&lt;console>:13: error: illegal inheritance; superclass C
+ is not a subclass of the superclass A
+ of the mixin trait D
+       class Test4 extends C with D
+                                  ^
+*/</span>
+<span class="token keyword">class</span> Test5 <span class="token keyword">extends</span> A <span class="token keyword">with</span> E
+<span class="token comment">/*&lt;console>:13: error: illegal inheritance; superclass A
+ is not a subclass of the superclass B
+ of the mixin trait E
+       class Test5 extends A with E
+*/</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>上例中，类<code>Test1</code>直接混入特质<code>D</code>，这样隐式继承自<code>D</code>的超类——类<code>A</code>，所以合法。类<code>Test2</code>和<code>Test3</code>分别继承自类<code>A</code>和<code>A</code>的子类，所以也允许混入特质<code>D</code>。类<code>Test4</code>的超类是<code>C</code>，而<code>C</code>与<code>A</code>没有任何关系，所以非法。类<code>Test5</code>的超类是<code>A</code>，特质<code>E</code>的超类是<code>B</code>，尽管类<code>A</code>是类<code>B</code>的超类，这也仍然是非法的。从提示的错误信息也可以看出，混入特质的类/单例对象/特质，其超类必须是待混入特质的超类或超类的子类。</p>
+<h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>Scala里常见的集合有：数组(Array)、列表(List)、集(Set)、映射(Map)、序列(Seq)、元组(Tuple)、数组缓冲和列表缓冲。</p>
 <h3 id="数组-Array"><a href="#数组-Array" class="headerlink" title="数组(Array)"></a>数组(Array)</h3><p>Scala的数组类名为<strong>Array</strong>，继承自Java，Scala中，数组也只是类的实例，可以通过new来构造一个数组对象。</p>
 <p>构造数组对象时，首先写方括号和类型参数，然后再写圆括号和值参数，数组对象必须是定长的。语法如下，其中，方括号里的T表示元素的类型，圆括号里的n代表元素个数，它必须是一个非负整数，如果n等于0则表示空数组。Scala的<strong>数组下标从0开始</strong>。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">new</span> Array<span class="token punctuation">[</span>T<span class="token punctuation">]</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
