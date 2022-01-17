@@ -528,11 +528,10 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                		<span class="token comment">// 字面值为“1”的UInt对象</span>
 <span class="token operator">-</span><span class="token number">8.</span>S               		<span class="token comment">// 字面值为“-8”的SInt对象</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-<p>其实这也是Scala中的隐式转换，Chisel定义了一系列隐式类用于类型转换：<code>fromBigIntToLiteral</code>、<code>fromtIntToLiteral</code>、<code>fromtLongToLiteral</code>、<code>fromStringToLiteral</code>、<code>fromBooleanToLiteral</code>等，具体请看API：<a target="_blank" rel="noopener" href="https://www.chisel-lang.org/api/3.5.0/chisel3/index.html">Chisel_API</a>。</p>
-<p>以隐式类<code>fromtIntToLiteral</code>为例，存在一个同名的隐式转换，把相应的Scala的<code>Int</code>对象转换成一个<code>fromtIntToLiteral</code>的对象。</p>
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220116162436417.png" alt="fromIntToLiteral定义方法" style="zoom:90%;" />
-
-<p>而<code>fromtIntToLiteral</code>类有两个方法<code>U</code>和<code>S</code>，分别构造一个等值的<code>UInt</code>对象和<code>SInt</code>对象。再加上Scala的基本值类都是用字面量构造对象，所以要表示一个<code>UInt</code>对象，可以写成<code>1.U</code>的格式，这样编译器会插入隐式转换，变成<code>fromtIntToLiteral(1).U</code>，进而构造出字面值为<code>1</code>的<code>UInt</code>对象。同理，也可以构造<code>SInt</code>。还有相同行为的方法<code>asUInt</code>和<code>asSInt</code>目前已被官方不推荐，未来很有可能会删除。</p>
+<p>其实这也是Scala中的隐式转换，Chisel定义了一系列隐式类用于类型转换：<code>fromBigIntToLiteral</code>、<code>fromIntToLiteral</code>、<code>fromLongToLiteral</code>、<code>fromStringToLiteral</code>、<code>fromBooleanToLiteral</code>等，具体请看API：<a target="_blank" rel="noopener" href="https://www.chisel-lang.org/api/3.5.0/chisel3/index.html">Chisel_API</a>。</p>
+<p>以隐式类<code>fromIntToLiteral</code>为例，存在一个同名的隐式转换，把相应的Scala的<code>Int</code>对象转换成一个<code>fromIntToLiteral</code>的对象。</p>
+<p><img src="D:\清风\Study\HexoData\image-20220116162436417.png" alt="fromIntToLiteral"></p>
+<p>而<code>fromIntToLiteral</code>类有两个方法<code>U</code>和<code>S</code>，分别构造一个等值的<code>UInt</code>对象和<code>SInt</code>对象。再加上Scala的基本值类都是用字面量构造对象，所以要表示一个<code>UInt</code>对象，可以写成<code>1.U</code>的格式，这样编译器会插入隐式转换，变成<code>fromIntToLiteral(1).U</code>，进而构造出字面值为<code>1</code>的<code>UInt</code>对象。同理，也可以构造<code>SInt</code>。还有相同行为的方法<code>asUInt</code>和<code>asSInt</code>目前已被官方不推荐，未来很有可能会删除。</p>
 <p>字面量同样可以使用<code>Width</code>类型来定义宽度，默认会按字面值取最小宽度：</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">8.</span>U<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>			<span class="token comment">// 一个4位的常量8</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
