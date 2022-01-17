@@ -5,11 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="chisel_01, Hexo">
-    <meta name="description" content="Chisel学习.一它是托管嵌入式DSL的好语言。
-它有一个强大而优雅的库，用于处理各种数据集合。
-它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。
-它具有强大的功能表达和传递方式。
-Chipel、Chijel和Ch">
+    <meta name="description" content="Chisel学习.一Constructing Hardware In a Scala Embedded Language
+注意Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -474,17 +471,49 @@ Chipel、Chijel和Ch">
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h1 id="Chisel学习-一"><a href="#Chisel学习-一" class="headerlink" title="Chisel学习.一"></a>Chisel学习.一</h1><p>它是托管嵌入式DSL的好语言。</p>
-<p>它有一个强大而优雅的库，用于处理各种数据集合。</p>
-<p>它有一个严格的类型系统，有助于在开发周期的早期（即编译时）捕获大量错误。</p>
-<p>它具有强大的功能表达和传递方式。</p>
-<p>Chipel、Chijel和Chicel的效果不如凿子好。</p>
-<p>Constructing Hardware In a Scala Embedded Language</p>
-<p>Chisel模块声明时不包括Clock和Reset，这些信号是隐式生成的，在大部分设计中处理这些底层细节是不方便的，Chisel提供的寄存器如果需要，会自动连接Clock和Reset。Chisel 3.2.0开始，已经支持异步复位。</p>
+                <h1 id="Chisel学习-一"><a href="#Chisel学习-一" class="headerlink" title="Chisel学习.一"></a>Chisel学习.一</h1><p>Constructing Hardware In a Scala Embedded Language</p>
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>Chisel更准确地说是寄宿在Scala里的语言，本质依旧是Scala，可以理解为在Scala上创建了Chisel相关的库文件，而库文件里有Chisel自定义的与硬件相关的内容。因此每个Chisel文件都需要声明<code>import chisel3._</code>，对于某些高级语法，还需要导入<code>import chisel3.util._</code>、<code>import chisel3.experimental._</code>等。</p>
 <p>区分<strong>哪些代码是Scala，哪些是Chisel</strong>很重要。</p>
 <p>Chisel不支持四态逻辑的x和z，只支持0和1。如果确实需要，可以通过黑盒语法与外部的Verilog代码互动，也可以在下游工具链里添加四态逻辑。</p>
 <p>Chisel会对未被驱动的输出型端口和线网进行检测，如果存在，会进行报错。报错选项可以关闭和打开，取决于读者对设计模型的需求。推荐把该选项打开，尽量不要残留无用的声明。</p>
+<p>Chisel模块声明时不包括Clock和Reset，这些信号是隐式生成的，在大部分设计中处理这些底层细节是不方便的，Chisel提供的寄存器如果需要，会自动连接Clock和Reset。Chisel 3.2.0开始，已经支持异步复位。</p>
+<h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
+<p>以与门为例，src/main/scala创建AND.scala：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// AND.scala</span>
+<span class="token keyword">package</span> <span class="token namespace">test</span>
+ 
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span>experimental<span class="token punctuation">.</span></span>_
+ 
+<span class="token keyword">class</span> AND <span class="token keyword">extends</span> RawModule <span class="token punctuation">&#123;</span>
+  <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> a <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> b <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> c <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+ 
+  io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a <span class="token operator">&amp;</span> io<span class="token punctuation">.</span>b
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>src/main/scala创建ANDtest.scala:</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// ANDtest.scala</span>
+<span class="token keyword">package</span> <span class="token namespace">test</span>
+ 
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+ 
+<span class="token keyword">object</span> testMain <span class="token keyword">extends</span> App <span class="token punctuation">&#123;</span>
+  Driver<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>args<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token keyword">new</span> AND<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>执行命令<code>sbt &quot;test:runMain test.testMain --target-dir generated/and&quot;</code>就会在当前路径生成一个generated文件夹，里面有一个and文件夹。生成的AND.v代码：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">module</span> <span class="token function">AND</span><span class="token punctuation">(</span>
+     <span class="token keyword">input</span>   io_a<span class="token punctuation">,</span>
+     <span class="token keyword">input</span>   io_b<span class="token punctuation">,</span>
+     <span class="token keyword">output</span>  io_c
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+     <span class="token keyword">assign</span> io_c <span class="token operator">=</span> io_a <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span>
+<span class="token keyword">endmodule</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Chisel自定义的数据类型不同于Scala的类型，构建硬件电路需要用Chisel自定义数据类型。</p>
 <p><img src="D:\清风\Study\HexoData\type_hierarchy.svg" alt="Chisel基本数据类型"></p>
 <p>Chisel提供了三种数据类型用来描述信号(signals)，组合逻辑(combinational logic)，和寄存器(registers)：<code>Bits</code>，<code>UInt</code>和<code>SInt</code>。<code>UInt</code>和<code>SInt</code>是<code>Bits</code>的拓展，并且所有的三种类型代表bits的矢量。<code>UInt</code>表示这个bits的矢量是一个无符号的整型，<code>SInt</code>表示一个有符号的整型。以下是不同类型的定义：</p>
@@ -496,8 +525,8 @@ SInt<span class="token punctuation">(</span><span class="token number">10.</span
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">Bits<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span>				<span class="token comment">// 宽度为1的Bits类型</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>字面量可以通过Scala定义并转为Chisel类型：</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                	<span class="token comment">// 字面值为“1”的UInt对象</span>
-<span class="token operator">-</span><span class="token number">8.</span>S               	<span class="token comment">// 字面值为“-8”的SInt对象</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token number">1.</span>U                		<span class="token comment">// 字面值为“1”的UInt对象</span>
+<span class="token operator">-</span><span class="token number">8.</span>S               		<span class="token comment">// 字面值为“-8”的SInt对象</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
 <p>其实这也是Scala中的隐式转换，Chisel定义了一系列隐式类用于类型转换：<code>fromBigIntToLiteral</code>、<code>fromtIntToLiteral</code>、<code>fromtLongToLiteral</code>、<code>fromStringToLiteral</code>、<code>fromBooleanToLiteral</code>等，具体请看API：<a target="_blank" rel="noopener" href="https://www.chisel-lang.org/api/3.5.0/chisel3/index.html">Chisel_API</a>。</p>
 <p>以隐式类<code>fromtIntToLiteral</code>为例，存在一个同名的隐式转换，把相应的Scala的<code>Int</code>对象转换成一个<code>fromtIntToLiteral</code>的对象。</p>
@@ -558,8 +587,9 @@ MixedVec<span class="token punctuation">(</span><span class="token punctuation">
 
 <p>上例最后一行代码会生成十个<code>UInt</code>类型的宽度<code>Width</code>从1依次增加至10的集合，如果是生成寄存器，那么会生成<code>reg_0</code>、<code>[1:0] reg_1</code>、……、<code>[9:0] reg_9</code>。</p>
 <p>Scala中的map、flatMap、zip、foreach、filter、exists、contains等方法虽然是软件层面，但也可以用于简化硬件逻辑的编写。</p>
+<p><code>Vec</code>和<code>MixedVec</code>传入的是数据类型，而<code>VecInit</code>和<code>MixedVecInit</code>传入的是硬件类型。</p>
 <blockquote>
-<p>Vec和MixedVec定义的时候，最好不要直接给确切的值，只需要给出Chisel type，之后再给元素单独赋值即可，如上面的<code>UInt(32.W)</code>即可，否则会报错。原因是：Vec接收的是数据类型，而带字面量的数据如<code>1.U</code>会被认为是硬件类型，就会报错。</p>
+<p>Vec和MixedVec定义的时候，最好不要直接给确切的值，只需要给出Chisel type，之后再给元素单独赋值即可，如上面的<code>UInt(32.W)</code>即可，否则会报错。原因是：Vec接收的是数据类型，而带字面量的数据如**<code>1.U</code>会被认为是硬件类型**，就会报错。</p>
 <p>同样，VecInit和MixedVecInit必须给出确切的初始化的值，不能只给Chisel type。原因是：VecInit接收的是硬件类型，而Chisel type如<code>UInt(32.W)</code>是数据类型，如果传入就会报错。</p>
 </blockquote>
 <p>索引时需要多个括号：</p>
@@ -590,11 +620,220 @@ bundle<span class="token punctuation">.</span>bar <span class="token operator">:
 <span class="token keyword">val</span> uintTwo <span class="token operator">=</span> <span class="token number">0xb4</span><span class="token punctuation">.</span>U
 <span class="token keyword">val</span> bundleTwo <span class="token operator">=</span> uintTwo<span class="token punctuation">.</span>asTypeOf<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>  <span class="token comment">// foo = 11, bar = 4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
+<h2 id="内建操作符"><a href="#内建操作符" class="headerlink" title="内建操作符"></a>内建操作符</h2><p>需要注意的是，由于“==”和“!=”已经被Scala占有，所以Chisel另设了两个新的操作符用来比较相等性——“===”和“=/=”。</p>
+<table>
+<thead>
+<tr>
+<th align="center">操作符</th>
+<th align="center">释义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>位操作符</strong></td>
+<td align="center"><strong>作用类型：SInt, UInt, Bool</strong></td>
+</tr>
+<tr>
+<td align="center">~</td>
+<td align="center">位取反</td>
+</tr>
+<tr>
+<td align="center">&amp;</td>
+<td align="center">位与</td>
+</tr>
+<tr>
+<td align="center">|</td>
+<td align="center">位或</td>
+</tr>
+<tr>
+<td align="center">^</td>
+<td align="center">位异或</td>
+</tr>
+<tr>
+<td align="center"><strong>缩减位</strong></td>
+<td align="center"><strong>作用类型：SInt, UInt 返回类型：Bool</strong></td>
+</tr>
+<tr>
+<td align="center">x.andR</td>
+<td align="center">缩减与</td>
+</tr>
+<tr>
+<td align="center">x.orR</td>
+<td align="center">缩减或</td>
+</tr>
+<tr>
+<td align="center">x.xorR</td>
+<td align="center">缩减异或</td>
+</tr>
+<tr>
+<td align="center"><strong>相等性</strong></td>
+<td align="center"><strong>作用类型：SInt, UInt, Bool 返回类型：Bool</strong></td>
+</tr>
+<tr>
+<td align="center">===</td>
+<td align="center">相等</td>
+</tr>
+<tr>
+<td align="center">=/=</td>
+<td align="center">不相等</td>
+</tr>
+<tr>
+<td align="center"><strong>移位</strong></td>
+<td align="center"><strong>作用类型：SInt, UInt</strong></td>
+</tr>
+<tr>
+<td align="center">&lt;&lt;</td>
+<td align="center">逻辑左移</td>
+</tr>
+<tr>
+<td align="center">&gt;&gt;</td>
+<td align="center">右移(UInt逻辑右移，SInt算术右移)</td>
+</tr>
+<tr>
+<td align="center"><strong>逻辑操作符</strong></td>
+<td align="center"><strong>作用类型：Bool</strong></td>
+</tr>
+<tr>
+<td align="center">!</td>
+<td align="center">逻辑非</td>
+</tr>
+<tr>
+<td align="center">&amp;&amp;</td>
+<td align="center">逻辑与</td>
+</tr>
+<tr>
+<td align="center">||</td>
+<td align="center">逻辑或</td>
+</tr>
+<tr>
+<td align="center"><strong>算术操作符</strong></td>
+<td align="center"><strong>作用类型：Sint, UInt</strong></td>
+</tr>
+<tr>
+<td align="center">+ (or +%)</td>
+<td align="center">加法(不进行宽度扩展)</td>
+</tr>
+<tr>
+<td align="center">+&amp;</td>
+<td align="center">加法(扩展一位进位位)</td>
+</tr>
+<tr>
+<td align="center">- (or -%)</td>
+<td align="center">减法(不进行宽度扩展)</td>
+</tr>
+<tr>
+<td align="center">-&amp;</td>
+<td align="center">减法(扩展一位进位位)</td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="center">乘法</td>
+</tr>
+<tr>
+<td align="center">/</td>
+<td align="center">除法</td>
+</tr>
+<tr>
+<td align="center">%</td>
+<td align="center">求余</td>
+</tr>
+<tr>
+<td align="center"><strong>算术比较符</strong></td>
+<td align="center"><strong>作用类型：SInt, UInt 返回类型：Bool</strong></td>
+</tr>
+<tr>
+<td align="center">&gt;</td>
+<td align="center">大于</td>
+</tr>
+<tr>
+<td align="center">&gt;=</td>
+<td align="center">大于等于</td>
+</tr>
+<tr>
+<td align="center">&lt;</td>
+<td align="center">小于</td>
+</tr>
+<tr>
+<td align="center">&lt;=</td>
+<td align="center">小于等于</td>
+</tr>
+</tbody></table>
+<h3 id="硬件赋值"><a href="#硬件赋值" class="headerlink" title="硬件赋值"></a>硬件赋值</h3><p>只有数据类型是无法构成电路的，在Verilog中主要有wire和reg两种硬件类型，然后用赋值操作进行信号传递或硬件的连线等操作。但Chisel中所有对象都由val类型变量来定义，而Scala中无法对已经定义的val类型变量重新赋值，也就是“=”已经不可用。但Scala中的val类型变量是指定的对象不可更改，但这个对象本身可以被更改。</p>
+<p>为解决这个问题，Chisel定义了操作符“**:=**”作为等同于Verilog中的赋值操作。所以编写Chisel代码中要明白，对于寄存器等的声明要用Scala中的“=”操作符，而声明之后所有的硬件赋值操作都要使用“:=”操作符。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> x <span class="token operator">=</span> Wire<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+x <span class="token operator">:</span><span class="token operator">=</span> <span class="token string">"b1010"</span><span class="token punctuation">.</span>U  <span class="token comment">// 向4bit的线网x赋予了无符号数10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
+<h2 id="内建控制结构"><a href="#内建控制结构" class="headerlink" title="内建控制结构"></a>内建控制结构</h2><h3 id="when条件句"><a href="#when条件句" class="headerlink" title="when条件句"></a>when条件句</h3><p>由于Scala已经占用了“if……else……”语法，Chisel自建了对应的控制结构，语法如下：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala">when <span class="token punctuation">(</span>condition <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> definition <span class="token number">1</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span>elsewhen <span class="token punctuation">(</span>condition <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> definition <span class="token number">2</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">.</span>elsewhen <span class="token punctuation">(</span>condition N<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> definition N <span class="token punctuation">&#125;</span>
+<span class="token punctuation">.</span>otherwise <span class="token punctuation">&#123;</span> default behavior <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<h2 id="内建操作符"><a href="#内建操作符" class="headerlink" title="内建操作符"></a>内建操作符</h2><h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>PeekPokeTester Chisel提供的testbench。</p>
-<h2 id="一个简单例子"><a href="#一个简单例子" class="headerlink" title="一个简单例子"></a>一个简单例子</h2><p>在编写chisel文件夹里一般有两个主要的文件夹，src/main/scala是电路实现功能的Scala文件，src/test/scala是测试以及生成Verilog功能的Scala文件。</p>
-<p>以与门为例，src/main/scala创建AND.scala：</p>
+<p>注意，<code>.elsewhen</code>和<code>.otherwise</code>的开头有两个句点。所有的判断条件都是返回<code>Bool</code>类型的传名参数，不要和Scala的<code>Boolean</code>类型混淆，也不存在<code>Boolean</code>和<code>Bool</code>之间的相互转换。对于<code>UInt</code>、<code>SInt</code>，甚至是<code>Clock</code>和<code>Reset</code>类型，可以用方法<code>asBool</code>转换成<code>Bool</code>类型来作为判断条件。</p>
+<p>when语句不仅可以给线网赋值，还可以给寄存器赋值，但是要注意构建组合逻辑时不能缺失<code>.otherwise</code>分支。 下面是一个简单的寻找三个数中的最大值的模块：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> Max3 <span class="token keyword">extends</span> Module <span class="token punctuation">&#123;</span>
+  <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> in1 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">16.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in2 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">16.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in3 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">16.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> out <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">16.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    
+  when<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in1 <span class="token operator">>=</span> io<span class="token punctuation">.</span>in2 <span class="token operator">&amp;&amp;</span> io<span class="token punctuation">.</span>in1 <span class="token operator">>=</span> io<span class="token punctuation">.</span>in3<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    io<span class="token punctuation">.</span>out <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in1  
+  <span class="token punctuation">&#125;</span><span class="token punctuation">.</span>elsewhen<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in2 <span class="token operator">>=</span> io<span class="token punctuation">.</span>in3<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    io<span class="token punctuation">.</span>out <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in2 
+  <span class="token punctuation">&#125;</span><span class="token punctuation">.</span>otherwise <span class="token punctuation">&#123;</span>
+    io<span class="token punctuation">.</span>out <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in3
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>when有很多场合可以使用：比如使用when给带使能信号的寄存器更新数据；还可用于状态机的状态转换。除了when结构，util包里还有一个与之对偶的结构<code>unless</code>，如果unless的判定条件为<code>false.B</code>则一直执行，否则不执行：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span>_
+
+unless <span class="token punctuation">(</span>condition<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> definition <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="端口IO"><a href="#端口IO" class="headerlink" title="端口IO"></a>端口IO</h2><p>类似于Verilog中的input、output。</p>
+<h3 id="定义端口"><a href="#定义端口" class="headerlink" title="定义端口"></a>定义端口</h3><p>整个端口列表是由方法<code>IO[T &lt;: Data](iodef: T)</code>来定义的，通常其参数是一个<code>Bundle</code>类型的对象，而且引用的字段名称<strong>必须</strong>是<code>io</code>。因为端口存在方向，所以还需要方法<code>Input[T &lt;: Data](source: T)</code>和<code>Output[T &lt;: Data](source: T)</code>来为每个端口表明具体的方向。注意Input和Output仅仅是复制它们的参数，所以不能是已经被硬件类型包裹的数据类型。因为字段名称是<code>io</code>，生成的Verilog代码中端口都会有<code>io_</code>的前缀。</p>
+<p>目前Chisel<strong>不支持双向端口inout</strong>，只能通过Analog端口来模拟外部Verilog的双向端口。</p>
+<p>一旦端口列表定义完成，就可以通过<code>io.xxx</code>来使用。输入可以驱动内部其它信号，输出可以被其他信号驱动。可以直接进行赋值操作，布尔类型的端口还能直接作为使能信号。端口不需要再使用其它硬件类型来定义，不过要注意从性质上来说它仍然属于组合逻辑的线网。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> MyIO <span class="token keyword">extends</span> Bundle <span class="token punctuation">&#123;</span>
+   <span class="token keyword">val</span> in <span class="token operator">=</span> Input<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token keyword">val</span> out <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+……
+   <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> MyIO<span class="token punctuation">)</span>  <span class="token comment">// 模块的端口列表</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="翻转端口方向"><a href="#翻转端口方向" class="headerlink" title="翻转端口方向"></a>翻转端口方向</h3><p>对于两个相连的模块，可能存在大量同名但方向相反的端口。仅仅为了翻转方向而不得不重写一遍端口显得费时费力，所以Chisel提供了<code>Flipped[T &lt;: Data](source: T)</code>方法，可以把参数里所有的输入转输出，输出转输入。如果是黑盒里的Analog端口，则仍是双向的。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"> <span class="token keyword">class</span> MyIO <span class="token keyword">extends</span> Bundle <span class="token punctuation">&#123;</span>
+   <span class="token keyword">val</span> in <span class="token operator">=</span> Input<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token keyword">val</span> out <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+……
+   <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> MyIO<span class="token punctuation">)</span>  <span class="token comment">// in是输入，out是输出</span>
+
+   <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span>Flipped<span class="token punctuation">(</span><span class="token keyword">new</span> MyIO<span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment">// out是输入，in是输出</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="整体连接"><a href="#整体连接" class="headerlink" title="整体连接"></a>整体连接</h3><p>翻转方向的端口列表通常配合整体连接符号<code>&lt;&gt;</code>使用。该操作符会把左右两边的端口列表里所有同名的端口进行连接，而且同一级的端口方向必须是输入连输出、输出连输入，父级和子级的端口方向则是输入连输入、输出连输出。注意，方向必须按这个规则匹配，而且不能存在端口名字、数量、类型不同的情况。这样就省去了大量连线的代码。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">class</span> MyIO <span class="token keyword">extends</span> Bundle <span class="token punctuation">&#123;</span>
+   <span class="token keyword">val</span> in <span class="token operator">=</span> Input<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+   <span class="token keyword">val</span> out <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">32.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+……
+   <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+       <span class="token keyword">val</span> x <span class="token operator">=</span> <span class="token keyword">new</span> MyIO       
+       <span class="token keyword">val</span> y <span class="token operator">=</span> Flipped<span class="token punctuation">(</span><span class="token keyword">new</span> MyIO<span class="token punctuation">)</span>
+   <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+
+   io<span class="token punctuation">.</span>x <span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span> io<span class="token punctuation">.</span>y  <span class="token comment">// 相当于 io.y.in := io.x.in; io.x.out := io.y.out </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h2 id="模块Module"><a href="#模块Module" class="headerlink" title="模块Module"></a>模块Module</h2><p>类似于Verilog中的module。</p>
+<h3 id="定义模块"><a href="#定义模块" class="headerlink" title="定义模块"></a>定义模块</h3><p>在Chisel里面是用一个自定义的类来定义模块的，这个类有以下三个特点：</p>
+<p>①继承自Module类、RawModule类等。</p>
+<p>②有一个抽象字段<code>io</code>需要实现，该字段必须引用前面所说的端口对象。</p>
+<p>③在类的主构造器里进行内部电路连线。</p>
+<p>因为非字段、非方法的内容都属于主构造方法，所以用操作符<code>:=</code>进行的赋值、用<code>&lt;&gt;</code>进行的连线或一些控制结构等等，都属于主构造方法。从Chisel的层面来讲，它们就是在声明如何进行模块内部子电路的连接、信号的传递，类似于Verilog的assign和always语句。</p>
+<p>再回到简单的例子AND，这个类继承自RawModule类，而且端口的声明是声明一个匿名类继承自Bundle，然后实例化该匿名类。对于短小、简单的端口列表，可以使用这种简便写法。对于大的公用接口，应该单独写成具名的Bundle子类，方便修改。</p>
 <pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// AND.scala</span>
 <span class="token keyword">package</span> <span class="token namespace">test</span>
  
@@ -611,29 +850,443 @@ bundle<span class="token punctuation">.</span>bar <span class="token operator">:
   io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a <span class="token operator">&amp;</span> io<span class="token punctuation">.</span>b
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>src/main/scala创建ANDtest.scala:</p>
-<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// ANDtest.scala</span>
+<h3 id="模块例化"><a href="#模块例化" class="headerlink" title="模块例化"></a>模块例化</h3><p>要例化一个模块，并不是直接用new生成一个实例对象就完成了，还需要再把实例的对象传递给单例对象Module的apply方法。这种别扭的语法是Scala的语法限制造成的，就像端口需要写成<code>IO(new Bundle &#123;…&#125;)</code>，无符号数要写成<code>UInt(n.W)</code>等等一样。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> m0 <span class="token operator">=</span> Module<span class="token punctuation">(</span><span class="token keyword">new</span> Mux2<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>对于要多次例化的重复模块，可以利用向量的工厂方法<code>VecInit[T &lt;: Data]</code>。因为该方法接收的参数类型是Data的子类，而模块的字段io正好是Bundle类型，并且实际的电路连线仅仅只需针对模块的端口，所以可以把待例化模块的io字段组成一个序列，或者按重复参数的方式作为参数传递。通常使用序列作为参数，这样更节省代码。生成序列的一种方法是调用单例对象Seq里的方法fill，该方法的一个重载版本有两个单参数列表，第一个接收Int类型的对象，表示序列的元素个数，第二个是传名参数，接收序列的元素。</p>
+<p>多个例化模块时Vec中的元素因为必须是Data的子类，因此元素<strong>必须是模块的端口字段io</strong>，这样的话在引用例化模块的具体端口时，<strong>路径里就不能再出现io</strong>。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// mux4_2.scala</span>
 <span class="token keyword">package</span> <span class="token namespace">test</span>
  
 <span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+<span class="token keyword">class</span> Mux4_2 <span class="token keyword">extends</span> Module <span class="token punctuation">&#123;</span>
+  <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> in0 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in1 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in2 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in3 <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> sel <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">2.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> out <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token comment">// 例化了三个Mux2，并且参数是端口字段io</span>
+  <span class="token keyword">val</span> m <span class="token operator">=</span> VecInit<span class="token punctuation">(</span>Seq<span class="token punctuation">.</span>fill<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">(</span>Module<span class="token punctuation">(</span><span class="token keyword">new</span> Mux2<span class="token punctuation">)</span><span class="token punctuation">.</span>io<span class="token punctuation">)</span><span class="token punctuation">)</span>  
+  m<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>sel <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>sel<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>  <span class="token comment">// 模块的端口通过下标索引，并且路径里没有“io”</span>
+  m<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>in0 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in0
+  m<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>in1 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in1
+  m<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>sel <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>sel<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+  m<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>in0 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in2
+  m<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>in1 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in3
+  m<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>sel <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>sel<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+  m<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>in0 <span class="token operator">:</span><span class="token operator">=</span> m<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">.</span>out
+  m<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>in1 <span class="token operator">:</span><span class="token operator">=</span> m<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span>out
+  io<span class="token punctuation">.</span>out <span class="token operator">:</span><span class="token operator">=</span> m<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span>out
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="Module模块类"><a href="#Module模块类" class="headerlink" title="Module模块类"></a>Module模块类</h3><p>我们在大多数情况下自定义的模块都是继承自<code>Module</code>，但其实还有两种常用的module，分别是<code>MultiIOModule</code>和<code>RawModule</code>。</p>
+<p><strong>MultiIOModule</strong>：它没有抽象字段<code>io</code>需要实现，所以允许根据需要只定义多个不同的IO，而不需要像前面介绍的那样必须实现抽象成员<code>io</code>(但也允许采用和<code>Module</code>一样的端口定义形式)。而且从<code>MultiIOModule</code>生成的Verilog中的端口信号没有io_前缀。<code>MultiIOModule</code>也有隐式的时钟和复位信号。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// mux2.scala</span>
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+
+<span class="token keyword">class</span> Mux2 <span class="token keyword">extends</span> MultiIOModule <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">val</span> sel <span class="token operator">=</span> IO<span class="token punctuation">(</span>Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in0 <span class="token operator">=</span> IO<span class="token punctuation">(</span>Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> in1 <span class="token operator">=</span> IO<span class="token punctuation">(</span>Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> out <span class="token operator">=</span> IO<span class="token punctuation">(</span>Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    out <span class="token operator">:</span><span class="token operator">=</span> <span class="token punctuation">(</span>sel <span class="token operator">&amp;</span> in1<span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token punctuation">(</span>sel <span class="token operator">&amp;</span> in0<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>写法的优点在于可以很方便的在程序中增加一个或者多个端口，因为你现在只需要简单的定义一个任意变量名的变量即可，不再需要将端口放在<code>io</code>字段中，也不需要再使用<code>Bundle</code>。</p>
+<p><strong>RawModule</strong>：与<code>MultiIOModule</code>相比在定义IO时是类似的，也可以采用上述格式。更重要的是，<code>RawModule</code><strong>没有隐式的时钟和复位信号</strong>，因此它多用于多时钟域设计中。</p>
+<h2 id="线网Wire"><a href="#线网Wire" class="headerlink" title="线网Wire"></a>线网Wire</h2><p>类似于Verilog中组合逻辑用的wire。</p>
+<p>Chisel把线网作为电路的节点，通过工厂方法<code>Wire[T &lt;: Data](t: T)</code>来定义。可以对线网进行赋值，也可以连接到其他电路节点，这是组成组合逻辑的基本硬件类型。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> w0 <span class="token operator">=</span> Wire<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// width is inferred</span>
+<span class="token keyword">val</span> w1 <span class="token operator">=</span> Wire<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// width is set to 8</span>
+
+<span class="token keyword">val</span> w2 <span class="token operator">=</span> Wire<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// width is inferred</span>
+<span class="token keyword">val</span> w3 <span class="token operator">=</span> Wire<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment">// width of each element is set to 8</span>
+
+<span class="token keyword">class</span> MyBundle <span class="token punctuation">&#123;</span>
+  <span class="token keyword">val</span> unknown <span class="token operator">=</span> UInt<span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> known   <span class="token operator">=</span> UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">val</span> w4 <span class="token operator">=</span> Wire<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>
+<span class="token comment">// Width of w4.unknown is inferred</span>
+<span class="token comment">// Width of w4.known is set to 8</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> mixVec <span class="token operator">=</span> Wire<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+mixVec <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a
+io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> mixVec <span class="token operator">&amp;</span> io<span class="token punctuation">.</span>b<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>生成的Verilog代码：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">wire</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _GEN_0 <span class="token operator">=</span> <span class="token operator">&#123;&#123;</span><span class="token number">1'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> io_a<span class="token operator">&#125;</span><span class="token punctuation">;</span> <span class="token comment">// @[AND.scala 16:16]</span>
+<span class="token keyword">assign</span> io_c <span class="token operator">=</span> _GEN_0 <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span> <span class="token comment">// @[AND.scala 16:16]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>注意，<code>Wire</code>当中可包裹<code>Vec</code>或<code>MixedVec</code>，但不能包裹<code>VecInit</code>或<code>MixedVecInit</code>，因为它们传入的是硬件类型，返回的也是硬件类型，但<code>Wire</code>必须传入数据类型。</p>
+<p>另外，一旦被Wire包裹，必须提供初始值，也即必须被驱动，至少要赋个<code>DontCare</code>，否则会报错。</p>
+<h2 id="寄存器Reg"><a href="#寄存器Reg" class="headerlink" title="寄存器Reg"></a>寄存器Reg</h2><p>类似于Verilog中时序逻辑中用的reg。</p>
+<p>主要有五种内建的寄存器类型，以下例子均继承了<code>Module</code>类且混入了特质<code>RequireAsyncReset</code>，复位均为异步复位：</p>
+<hr>
+<p><strong>Reg</strong>：普通的寄存器，工厂方法<code>Reg[T &lt;: Data](t: T)</code>，传入数据类型。</p>
+<p>可以进行条件赋值，也可以进行无条件赋值，<strong>默认没有复位信号</strong>；参数<code>t</code>的意思是提供一个数据类型模板，也即指定数据的类型，不用给确切的值。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg0 <span class="token operator">=</span> Reg<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">2.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+reg0 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>生成的Verilog为：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg0<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:15]</span>
+<span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+  reg1 <span class="token operator">&lt;=</span> io_in<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 11:6]</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p><strong>RegInit</strong>：带复位的寄存器，工厂方法<code>RegInit[T &lt;: Data](init: T)</code>或<code>RegInit[T &lt;: Data](t: T, init: T)</code>，传入硬件类型。</p>
+<p>可以进行条件赋值，也可以无条件赋值；<strong>默认有复位信号</strong>；参数<code>t</code>的意思是提供一个数据类型模板，也即指定数据的类型，不用给确切的值。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg1 <span class="token operator">=</span> RegInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">2.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+reg0 <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>in<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<p>生成Verilog为：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg1<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+<span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock <span class="token keyword">or</span> <span class="token keyword">posedge</span> reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+    reg1 <span class="token operator">&lt;=</span> <span class="token number">2'h0</span><span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+  <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+    reg1 <span class="token operator">&lt;=</span> io_in<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 11:6]</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p><strong>RegNext</strong>：跟随寄存器，工厂方法<code>RegNext[T &lt;: Data](next: T)</code>，传入硬件类型。在每个时钟上升沿，它都会采样一次传入的参数，并且没有复位信号。它的另一个版本的apply工厂方法是<code>RegNext[T &lt;: Data](next: T, init: T)</code>，也就是由复位信号控制，当复位信号有效时，复位到指定值，否则就跟随。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg2 <span class="token operator">=</span> RegNext<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>生成的Verilog为：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg2<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+<span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+  reg2 <span class="token operator">&lt;=</span> io_in<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到和<code>Reg</code>作用是一致的，当有复位值时：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg2 <span class="token operator">=</span> RegNext<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in<span class="token punctuation">,</span><span class="token number">0.</span>U<span class="token punctuation">)</span>	<span class="token comment">//in是2位的Input。注意要是0.U，而不能是0</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>生成Verilog：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg2<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+<span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock <span class="token keyword">or</span> <span class="token keyword">posedge</span> reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+    reg2 <span class="token operator">&lt;=</span> <span class="token number">2'h0</span><span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+  <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+    reg2 <span class="token operator">&lt;=</span> io_in<span class="token punctuation">;</span> <span class="token comment">// @[TEST.scala 10:19]</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看到此时和<code>RegInit</code>作用是一致的。</p>
+<hr>
+<p><strong>RegEnable</strong>：util包里的带使能端的寄存器，工厂方法<code>RegEnable[T &lt;: Data](next: T, init: T, enable: Bool)</code>，如果不需要复位信号，则第二个参数可以省略给出。传入硬件类型。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg3 <span class="token operator">=</span> RegEnable<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in<span class="token punctuation">,</span>io<span class="token punctuation">.</span>en<span class="token punctuation">)</span>	<span class="token comment">//in和en是Input</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>生成Verilog：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg3<span class="token punctuation">;</span> <span class="token comment">// @[Reg.scala 16:16]</span>
+  <span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span> <span class="token comment">// @[Reg.scala 17:18]</span>
+      reg3 <span class="token operator">&lt;=</span> io_in<span class="token punctuation">;</span> <span class="token comment">// @[Reg.scala 17:22]</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p><strong>ShiftRegister</strong>：util包里的移位寄存器，工厂方法<code>ShiftRegister[T &lt;: Data](in: T, n: Int, resetData: T, en: Bool)</code>其中第一个参数in是带移位的数据，第二个参数n是需要延迟的周期数，第三个参数resetData是指定的复位值，可以省略，第四个参数en是使能移位的信号，默认为true.B。传入硬件类型。</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token keyword">val</span> reg4 <span class="token operator">=</span> ShiftRegister<span class="token punctuation">(</span>io<span class="token punctuation">.</span>in<span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span>io<span class="token punctuation">.</span>en<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>生成Verilog：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg4_r<span class="token punctuation">;</span> <span class="token comment">// @[Reg.scala 16:16]</span>
+<span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg4<span class="token punctuation">;</span> <span class="token comment">// @[Reg.scala 16:16]</span>
+<span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span> <span class="token comment">// @[Reg.scala 17:18]</span>
+    reg4_r <span class="token operator">&lt;=</span> io_in<span class="token punctuation">;</span> <span class="token comment">// @[Reg.scala 17:22]</span>
+  <span class="token keyword">end</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span> <span class="token comment">// @[Reg.scala 17:18]</span>
+    reg4 <span class="token operator">&lt;=</span> reg4_r<span class="token punctuation">;</span> <span class="token comment">// @[Reg.scala 17:22]</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">end</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>可以看出，<strong>除了Reg，其余寄存器传入的参数都必须是硬件类型，而Reg传入的参数是数据类型。</strong></p>
+<hr>
+<p><strong>寄存器组</strong>：上述构造寄存器的工厂方法，它们的参数可以是任何Data的子类型。如果把子类型Vec[T]或VecInit[T]作为参数传递进去，就会生成多个位宽相同、行为相同、名字前缀相同的寄存器。同样，寄存器组在Chisel代码里可以通过下标索引。例如：</p>
+<pre class="line-numbers language-scala" data-language="scala"><code class="language-scala"><span class="token comment">// reg2.scala</span>
+<span class="token keyword">package</span> <span class="token namespace">test</span>
  
-<span class="token keyword">object</span> testMain <span class="token keyword">extends</span> App <span class="token punctuation">&#123;</span>
-  Driver<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>args<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token keyword">new</span> AND<span class="token punctuation">)</span>
-<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
+<span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span>_
+<span class="token keyword">class</span> REG2 <span class="token keyword">extends</span> Module <span class="token punctuation">&#123;</span>
+  <span class="token keyword">val</span> io <span class="token operator">=</span> IO<span class="token punctuation">(</span><span class="token keyword">new</span> Bundle <span class="token punctuation">&#123;</span>
+    <span class="token keyword">val</span> a <span class="token operator">=</span> Input<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> en <span class="token operator">=</span> Input<span class="token punctuation">(</span>Bool<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">val</span> c <span class="token operator">=</span> Output<span class="token punctuation">(</span>UInt<span class="token punctuation">(</span><span class="token number">1.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg0 <span class="token operator">=</span> RegNext<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span>io<span class="token punctuation">.</span>a<span class="token punctuation">,</span> io<span class="token punctuation">.</span>a<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg1 <span class="token operator">=</span> RegNext<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span>io<span class="token punctuation">.</span>a<span class="token punctuation">,</span> io<span class="token punctuation">.</span>a<span class="token punctuation">)</span><span class="token punctuation">,</span> VecInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">,</span> <span class="token number">0.</span>U<span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg2 <span class="token operator">=</span> RegInit<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg3 <span class="token operator">=</span> Reg<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg4 <span class="token operator">=</span> Reg<span class="token punctuation">(</span>Vec<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> UInt<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg5 <span class="token operator">=</span> RegEnable<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span>io<span class="token punctuation">.</span>a <span class="token operator">+</span> <span class="token number">1.</span>U<span class="token punctuation">,</span> io<span class="token punctuation">.</span>a <span class="token operator">+</span> <span class="token number">1.</span>U<span class="token punctuation">)</span><span class="token punctuation">,</span> VecInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> io<span class="token punctuation">.</span>en<span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg6 <span class="token operator">=</span> RegEnable<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span>io<span class="token punctuation">.</span>a <span class="token operator">-</span> <span class="token number">1.</span>U<span class="token punctuation">,</span> io<span class="token punctuation">.</span>a <span class="token operator">-</span> <span class="token number">1.</span>U<span class="token punctuation">)</span><span class="token punctuation">,</span> io<span class="token punctuation">.</span>en<span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg7 <span class="token operator">=</span> ShiftRegister<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span>io<span class="token punctuation">.</span>a<span class="token punctuation">,</span> io<span class="token punctuation">.</span>a<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> VecInit<span class="token punctuation">(</span><span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0.</span>U<span class="token punctuation">(</span><span class="token number">8.</span>W<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> io<span class="token punctuation">.</span>en<span class="token punctuation">)</span>
+  <span class="token keyword">val</span> reg8 <span class="token operator">=</span> ShiftRegister<span class="token punctuation">(</span>VecInit<span class="token punctuation">(</span>io<span class="token punctuation">.</span>a<span class="token punctuation">,</span> io<span class="token punctuation">.</span>a<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> io<span class="token punctuation">.</span>en<span class="token punctuation">)</span>
+  
+  reg2<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a<span class="token punctuation">.</span>andR
+  reg2<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a<span class="token punctuation">.</span>andR
+  reg3<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a<span class="token punctuation">.</span>orR
+  reg3<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> io<span class="token punctuation">.</span>a<span class="token punctuation">.</span>orR
+  when<span class="token punctuation">(</span>reset<span class="token punctuation">.</span>toBool<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    reg4<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">0.</span>U
+    reg4<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">0.</span>U
+  <span class="token punctuation">&#125;</span> <span class="token punctuation">.</span>otherwise <span class="token punctuation">&#123;</span>
+    reg4<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">1.</span>U
+    reg4<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">1.</span>U
+  <span class="token punctuation">&#125;</span>
+  io<span class="token punctuation">.</span>c <span class="token operator">:</span><span class="token operator">=</span> reg0<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg1<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg2<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg3<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg4<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg5<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg6<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg7<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg8<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>
+          reg0<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg1<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg2<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg3<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg4<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg5<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg6<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg7<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> reg8<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-<p>执行命令<code>sbt &quot;test:runMain test.testMain --target-dir generated/and&quot;</code>就会在当前路径生成一个generated文件夹，里面有一个and文件夹。生成的AND.v代码：</p>
-<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token keyword">module</span> <span class="token function">AND</span><span class="token punctuation">(</span>
-     <span class="token keyword">input</span>   io_a<span class="token punctuation">,</span>
-     <span class="token keyword">input</span>   io_b<span class="token punctuation">,</span>
-     <span class="token keyword">output</span>  io_c
+<p>生成的Verilog代码：</p>
+<pre class="line-numbers language-verilog" data-language="verilog"><code class="language-verilog"><span class="token comment">// REG2.v</span>
+<span class="token keyword">module</span> <span class="token function">REG2</span><span class="token punctuation">(</span>
+  <span class="token keyword">input</span>        clock<span class="token punctuation">,</span>
+  <span class="token keyword">input</span>        reset<span class="token punctuation">,</span>
+  <span class="token keyword">input</span>  <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> io_a<span class="token punctuation">,</span>
+  <span class="token keyword">input</span>        io_en<span class="token punctuation">,</span>
+  <span class="token keyword">output</span>       io_c
 <span class="token punctuation">)</span><span class="token punctuation">;</span>
-     <span class="token keyword">assign</span> io_c <span class="token operator">=</span> io_a <span class="token operator">&amp;</span> io_b<span class="token punctuation">;</span>
-<span class="token keyword">endmodule</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg0_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg0_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg1_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg1_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg2_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg2_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg3_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg3_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg4_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg4_1<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_5<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg5_0<span class="token punctuation">;</span>   
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg5_1<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span> <span class="token punctuation">[</span><span class="token number">8</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_10<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span> <span class="token punctuation">[</span><span class="token number">8</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_11<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_12<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg6_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg6_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_19_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_19_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_20_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_20_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg7_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg7_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_22_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_22_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_23_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_23_1<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg8_0<span class="token punctuation">;</span> 
+  <span class="token keyword">reg</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> reg8_1<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span> <span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span> _T_24<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_25<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_28<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _GEN_16<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_31<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_32<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_33<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_34<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_35<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_36<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_37<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_38<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_39<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_40<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_41<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_42<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_43<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_44<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_45<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_46<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_47<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_48<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_49<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_50<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_51<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_52<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_53<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_54<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_55<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_56<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_57<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_58<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_59<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_60<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_61<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_62<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_63<span class="token punctuation">;</span> 
+  <span class="token keyword">wire</span>  _T_64<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_5 <span class="token operator">=</span> io_a <span class="token operator">+</span> <span class="token number">8'h1</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_10 <span class="token operator">=</span> io_a <span class="token operator">-</span> <span class="token number">8'h1</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_11 <span class="token operator">=</span> <span class="token kernel-function property">$unsigned</span><span class="token punctuation">(</span>_T_10<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_12 <span class="token operator">=</span> _T_11<span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">:</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_24 <span class="token operator">=</span> <span class="token operator">~</span> io_a<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_25 <span class="token operator">=</span> _T_24 <span class="token operator">==</span> <span class="token number">8'h0</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_28 <span class="token operator">=</span> io_a <span class="token operator">!=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _GEN_16 <span class="token operator">=</span> reset <span class="token operator">?</span> <span class="token number">1'h0</span> <span class="token punctuation">:</span> <span class="token number">1'h1</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_31 <span class="token operator">=</span> reg0_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_32 <span class="token operator">=</span> reg1_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_33 <span class="token operator">=</span> _T_31 <span class="token operator">&amp;</span> _T_32<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_34 <span class="token operator">=</span> reg2_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_35 <span class="token operator">=</span> _T_33 <span class="token operator">&amp;</span> _T_34<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_36 <span class="token operator">=</span> reg3_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_37 <span class="token operator">=</span> _T_35 <span class="token operator">&amp;</span> _T_36<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_38 <span class="token operator">=</span> reg4_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_39 <span class="token operator">=</span> _T_37 <span class="token operator">&amp;</span> _T_38<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_40 <span class="token operator">=</span> reg5_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_41 <span class="token operator">=</span> _T_39 <span class="token operator">&amp;</span> _T_40<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_42 <span class="token operator">=</span> reg6_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_43 <span class="token operator">=</span> _T_41 <span class="token operator">&amp;</span> _T_42<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_44 <span class="token operator">=</span> reg7_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_45 <span class="token operator">=</span> _T_43 <span class="token operator">&amp;</span> _T_44<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_46 <span class="token operator">=</span> reg8_0<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_47 <span class="token operator">=</span> _T_45 <span class="token operator">&amp;</span> _T_46<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_48 <span class="token operator">=</span> reg0_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_49 <span class="token operator">=</span> _T_47 <span class="token operator">&amp;</span> _T_48<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_50 <span class="token operator">=</span> reg1_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_51 <span class="token operator">=</span> _T_49 <span class="token operator">&amp;</span> _T_50<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_52 <span class="token operator">=</span> reg2_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_53 <span class="token operator">=</span> _T_51 <span class="token operator">&amp;</span> _T_52<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_54 <span class="token operator">=</span> reg3_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_55 <span class="token operator">=</span> _T_53 <span class="token operator">&amp;</span> _T_54<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_56 <span class="token operator">=</span> reg4_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_57 <span class="token operator">=</span> _T_55 <span class="token operator">&amp;</span> _T_56<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_58 <span class="token operator">=</span> reg5_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_59 <span class="token operator">=</span> _T_57 <span class="token operator">&amp;</span> _T_58<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_60 <span class="token operator">=</span> reg6_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_61 <span class="token operator">=</span> _T_59 <span class="token operator">&amp;</span> _T_60<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_62 <span class="token operator">=</span> reg7_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_63 <span class="token operator">=</span> _T_61 <span class="token operator">&amp;</span> _T_62<span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> _T_64 <span class="token operator">=</span> reg8_1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+  <span class="token keyword">assign</span> io_c <span class="token operator">=</span> _T_63 <span class="token operator">&amp;</span> _T_64<span class="token punctuation">;</span> 
+  
+  <span class="token important">always @</span><span class="token punctuation">(</span><span class="token keyword">posedge</span> clock<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+    reg0_0 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+    reg0_1 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg1_0 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      reg1_0 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg1_1 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      reg1_1 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg2_0 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      reg2_0 <span class="token operator">&lt;=</span> <span class="token operator">&#123;&#123;</span><span class="token number">7'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> _T_25<span class="token operator">&#125;</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg2_1 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      reg2_1 <span class="token operator">&lt;=</span> <span class="token operator">&#123;&#123;</span><span class="token number">7'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> _T_25<span class="token operator">&#125;</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    reg3_0 <span class="token operator">&lt;=</span> <span class="token operator">&#123;&#123;</span><span class="token number">7'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> _T_28<span class="token operator">&#125;</span><span class="token punctuation">;</span>
+    reg3_1 <span class="token operator">&lt;=</span> <span class="token operator">&#123;&#123;</span><span class="token number">7'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> _T_28<span class="token operator">&#125;</span><span class="token punctuation">;</span>
+    reg4_0 <span class="token operator">&lt;=</span> <span class="token operator">&#123;&#123;</span><span class="token number">7'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> _GEN_16<span class="token operator">&#125;</span><span class="token punctuation">;</span>
+    reg4_1 <span class="token operator">&lt;=</span> <span class="token operator">&#123;&#123;</span><span class="token number">7'd0</span><span class="token operator">&#125;</span><span class="token punctuation">,</span> _GEN_16<span class="token operator">&#125;</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg5_0 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        reg5_0 <span class="token operator">&lt;=</span> _T_5<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg5_1 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        reg5_1 <span class="token operator">&lt;=</span> _T_5<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg6_0 <span class="token operator">&lt;=</span> _T_12<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg6_1 <span class="token operator">&lt;=</span> _T_12<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_19_0 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        _T_19_0 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_19_1 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        _T_19_1 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_20_0 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        _T_20_0 <span class="token operator">&lt;=</span> _T_19_0<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_20_1 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        _T_20_1 <span class="token operator">&lt;=</span> _T_19_1<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg7_0 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        reg7_0 <span class="token operator">&lt;=</span> _T_20_0<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>reset<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg7_1 <span class="token operator">&lt;=</span> <span class="token number">8'h0</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">else</span> <span class="token keyword">begin</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+        reg7_1 <span class="token operator">&lt;=</span> _T_20_1<span class="token punctuation">;</span>
+      <span class="token keyword">end</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_22_0 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_22_1 <span class="token operator">&lt;=</span> io_a<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_23_0 <span class="token operator">&lt;=</span> _T_22_0<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      _T_23_1 <span class="token operator">&lt;=</span> _T_22_1<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg8_0 <span class="token operator">&lt;=</span> _T_23_0<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>io_en<span class="token punctuation">)</span> <span class="token keyword">begin</span>
+      reg8_1 <span class="token operator">&lt;=</span> _T_23_1<span class="token punctuation">;</span>
+    <span class="token keyword">end</span>
+  <span class="token keyword">end</span>
+<span class="token keyword">endmodule</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-
-
-<h2 id="隐式时钟和复位"><a href="#隐式时钟和复位" class="headerlink" title="隐式时钟和复位"></a>隐式时钟和复位</h2><h2 id="复位"><a href="#复位" class="headerlink" title="复位"></a>复位</h2><h2 id="模块例化"><a href="#模块例化" class="headerlink" title="模块例化"></a>模块例化</h2><h2 id="IO和模块"><a href="#IO和模块" class="headerlink" title="IO和模块"></a>IO和模块</h2><p>Module RawModule</p>
-<h2 id="硬件模块和硬件类型"><a href="#硬件模块和硬件类型" class="headerlink" title="硬件模块和硬件类型"></a>硬件模块和硬件类型</h2>
+<p>由生成的Verilog代码可知，当使用寄存器组时，生成的Verilog并不是高维的寄存器形式，而是多个相似命名的寄存器。</p>
+<h2 id="测试Testbench"><a href="#测试Testbench" class="headerlink" title="测试Testbench"></a>测试Testbench</h2><p>PeekPokeTester Chisel提供的testbench。</p>
+<h2 id="未驱动处理"><a href="#未驱动处理" class="headerlink" title="未驱动处理"></a>未驱动处理</h2><p>未驱动的线网</p>
+<p>Chisel的Invalidate API支持检测未驱动的输出型IO以及定义不完整的Wire定义，在编译成firrtl时会产生“not fully initialized”错误。换句话说，就是组合逻辑的真值表不完整，不能综合出完整的电路。如果确实需要不被驱动的线网，则可以赋给一个DontCare对象，这会告诉Firrtl编译器，该线网故意不被驱动。转换成的Verilog会赋予该信号全0值，甚至把逻辑全部优化掉，所以谨慎使用。例如：</p>
+<p>val io = IO(new Bundle {<br>    val outs = Output(Vec(10, Bool()))<br>})<br>io.outs &lt;&gt; DontCare<br>1<br>2<br>3<br>4<br>检查机制是由CompileOptions.explicitInvalidate控制的，如果把它设置成true就是严格模式(执行检查)，设置成false就是不严格模式(不执行检查)。</p>
+<p>开关方法有两种，第一种是定义一个抽象的模块类，由抽象类设置，其余模块都继承自这个抽象类。例如：<br>// 严格<br>abstract class ExplicitInvalidateModule extends Module()(chisel3.core.ExplicitCompileOptions.NotStrict.copy(explicitInvalidate = true))</p>
+<p>// 不严格<br>abstract class ImplicitInvalidateModule extends Module()(chisel3.core.ExplicitCompileOptions.Strict.copy(explicitInvalidate = false))<br>1<br>2<br>3<br>4<br>5<br>第二种方法是在每个模块里重写compileOptions字段，由该字段设置编译选项。例如：<br>// 严格<br>class MyModule extends Module {<br>  override val compileOptions = chisel3.core.ExplicitCompileOptions.NotStrict.copy(explicitInvalidate = true)<br>  …<br>} </p>
+<p>// 不严格<br>class MyModule extends Module {<br>  override val compileOptions = chisel3.core.ExplicitCompileOptions.Strict.copy(explicitInvalidate = false)<br>  …<br>}</p>
+<h2 id="隐式时钟和隐式复位"><a href="#隐式时钟和隐式复位" class="headerlink" title="隐式时钟和隐式复位"></a>隐式时钟和隐式复位</h2><h2 id="复位"><a href="#复位" class="headerlink" title="复位"></a>复位</h2>
                 
             </div>
             <hr/>
