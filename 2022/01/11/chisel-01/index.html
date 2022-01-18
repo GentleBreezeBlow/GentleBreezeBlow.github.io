@@ -502,7 +502,7 @@
 <span class="token keyword">import</span> <span class="token namespace">chisel3<span class="token punctuation">.</span></span>_
  
 <span class="token keyword">object</span> testMain <span class="token keyword">extends</span> App <span class="token punctuation">&#123;</span>
-  Driver<span class="token punctuation">.</span>execute<span class="token punctuation">(</span>args<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">=></span> <span class="token keyword">new</span> AND<span class="token punctuation">)</span>
+  <span class="token punctuation">(</span><span class="token keyword">new</span> chisel3<span class="token punctuation">.</span>stage<span class="token punctuation">.</span>ChiselStage<span class="token punctuation">)</span><span class="token punctuation">.</span>emitVerilog<span class="token punctuation">(</span> <span class="token keyword">new</span> AND<span class="token punctuation">,</span>args<span class="token punctuation">)</span>
 <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>执行命令<code>sbt &quot;test:runMain test.testMain --target-dir generated/and&quot;</code>就会在当前路径生成一个generated文件夹，里面有一个and文件夹。生成的AND.v代码：</p>
@@ -610,14 +610,13 @@ myVec<span class="token punctuation">(</span><span class="token number">0</span>
    <span class="token keyword">val</span> foo <span class="token operator">=</span> UInt<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>  <span class="token comment">// 高位</span>
    <span class="token keyword">val</span> bar <span class="token operator">=</span> UInt<span class="token punctuation">(</span><span class="token number">4.</span>W<span class="token punctuation">)</span>  <span class="token comment">// 低位</span>
 <span class="token punctuation">&#125;</span>
-
 <span class="token keyword">val</span> bundle <span class="token operator">=</span> Wire<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>
 bundle<span class="token punctuation">.</span>foo <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">0xc</span><span class="token punctuation">.</span>U
 bundle<span class="token punctuation">.</span>bar <span class="token operator">:</span><span class="token operator">=</span> <span class="token number">0x3</span><span class="token punctuation">.</span>U
 <span class="token keyword">val</span> uint <span class="token operator">=</span> bundle<span class="token punctuation">.</span>asUInt  <span class="token comment">// 12*16 + 3 = 195</span>
 
 <span class="token keyword">val</span> uintTwo <span class="token operator">=</span> <span class="token number">0xb4</span><span class="token punctuation">.</span>U
-<span class="token keyword">val</span> bundleTwo <span class="token operator">=</span> uintTwo<span class="token punctuation">.</span>asTypeOf<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>  <span class="token comment">// foo = 11, bar = 4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token keyword">val</span> bundleTwo <span class="token operator">=</span> uintTwo<span class="token punctuation">.</span>asTypeOf<span class="token punctuation">(</span><span class="token keyword">new</span> MyBundle<span class="token punctuation">)</span>  <span class="token comment">// foo = 11, bar = 4</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="内建操作符"><a href="#内建操作符" class="headerlink" title="内建操作符"></a>内建操作符</h2><p>需要注意的是，由于“==”和“!=”已经被Scala占有，所以Chisel另设了两个新的操作符用来比较相等性——“===”和“=/=”。</p>
 <table>
@@ -827,7 +826,7 @@ unless <span class="token punctuation">(</span>condition<span class="token punct
    io<span class="token punctuation">.</span>x <span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span> io<span class="token punctuation">.</span>y  <span class="token comment">// 相当于 io.y.in := io.x.in; io.x.out := io.y.out </span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="模块Module"><a href="#模块Module" class="headerlink" title="模块Module"></a>模块Module</h2><p>类似于Verilog中的module。</p>
-<h3 id="定义模块"><a href="#定义模块" class="headerlink" title="定义模块"></a>定义模块</h3><p>在Chisel里面是用一个自定义的类来定义模块的，这个类有以下三个特点：</p>
+<h3 id="定义模块"><a href="#定义模块" class="headerlink" title="定义模块"></a>定义模块</h3><p>Chisel也是按模块划分的，只不过不是用关键字module开头来定义模块，而是用一个继承自Module类的自定义class。这个类有以下三个特点：</p>
 <p>①继承自Module类、RawModule类等。</p>
 <p>②有一个抽象字段<code>io</code>需要实现，该字段必须引用前面所说的端口对象。</p>
 <p>③在类的主构造器里进行内部电路连线。</p>
